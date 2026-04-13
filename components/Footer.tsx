@@ -8,27 +8,33 @@ export default function Footer() {
   const footerLinks = {
     Company: [
       { name: 'About', href: '#about' },
-      { name: 'Services', href: '#services' },
-      { name: 'Products', href: '#products' },
+      { name: 'Our Work', href: '#work' },
       { name: 'Process', href: '#process' },
+      { name: 'Careers', href: '#careers' },
     ],
-    Products: [
-      { name: 'CareerLens', href: '#products' },
-      { name: 'KasaBridge', href: '#products' },
-      { name: 'GoXpress', href: '#products' },
-      { name: 'Lamla FrontDesk', href: '#products' },
+    Services: [
+      { name: 'Software Development', href: '#services' },
+      { name: 'Mobile Apps', href: '#services' },
+      { name: 'AI Systems', href: '#services' },
+      { name: 'Product Design', href: '#services' },
     ],
     Connect: [
+      { name: 'Email', href: 'mailto:hello@asaaselabs.com' },
       { name: 'LinkedIn', href: '#' },
-      { name: 'Twitter', href: '#' },
-      { name: 'GitHub', href: '#' },
-      { name: 'Contact', href: '#contact' },
+      { name: 'Twitter/X', href: '#' },
     ],
   }
 
   return (
-    <footer className="bg-white border-t border-gray-100">
-      <div className="section-container py-16">
+    <footer className="bg-dark border-t border-gray-800 relative overflow-hidden">
+      {/* Large background text */}
+      <div className="absolute bottom-0 left-0 right-0 overflow-hidden opacity-5 pointer-events-none">
+        <div className="text-[20rem] font-bold text-white leading-none">
+          Asaase
+        </div>
+      </div>
+
+      <div className="section-container py-16 relative z-10">
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
           <motion.div
@@ -36,22 +42,13 @@ export default function Footer() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <div className="text-xl font-bold text-gray-900 mb-4">Asaase Labs</div>
-            <p className="text-sm text-gray-600 mb-6 leading-relaxed">
-              Engineering digital solutions that matter. Transforming ideas into scalable products.
-            </p>
-            <div className="flex gap-3">
-              {['LinkedIn', 'Twitter', 'GitHub'].map((social) => (
-                <a
-                  key={social}
-                  href="#"
-                  className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all text-xs font-medium"
-                  aria-label={social}
-                >
-                  {social[0]}
-                </a>
-              ))}
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-primary text-2xl">⚡</span>
+              <div className="text-xl font-bold text-white">Asaase Labs</div>
             </div>
+            <p className="text-sm text-gray-400 mb-6 leading-relaxed">
+              Building Africa's next generation of digital solutions through innovative engineering and design.
+            </p>
           </motion.div>
 
           {/* Links */}
@@ -63,13 +60,13 @@ export default function Footer() {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
             >
-              <h3 className="font-semibold text-sm text-gray-900 mb-4">{category}</h3>
+              <h3 className="font-semibold text-sm text-white mb-4">{category}</h3>
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link.name}>
                     <a
                       href={link.href}
-                      className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                      className="text-sm text-gray-400 hover:text-white transition-colors"
                     >
                       {link.name}
                     </a>
@@ -81,19 +78,16 @@ export default function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-gray-600">
+        <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-gray-500">
             © {currentYear} Asaase Labs. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm">
-            <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
-              Privacy
+            <a href="#" className="text-gray-500 hover:text-white transition-colors">
+              Privacy Policy
             </a>
-            <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
-              Terms
-            </a>
-            <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
-              Cookies
+            <a href="#" className="text-gray-500 hover:text-white transition-colors">
+              Terms of Service
             </a>
           </div>
         </div>

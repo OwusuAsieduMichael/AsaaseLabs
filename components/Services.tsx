@@ -5,29 +5,36 @@ import { motion } from 'framer-motion'
 export default function Services() {
   const services = [
     {
-      title: 'AI & Machine Learning',
-      description: 'Advanced neural networks, predictive analytics, and intelligent automation systems.',
-      features: ['Deep Learning', 'Computer Vision', 'NLP', 'Predictive Analytics'],
+      title: 'Custom Software',
+      description: 'Bespoke web and mobile applications built with modern stacks to solve complex operational challenges.',
+      icon: (
+        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+        </svg>
+      ),
     },
     {
-      title: 'Software Development',
-      description: 'Cloud-native applications and scalable enterprise solutions with modern tech stacks.',
-      features: ['Cloud Native', 'Microservices', 'API Development', 'DevOps'],
-    },
-    {
-      title: 'Mobile Applications',
-      description: 'Cross-platform apps with seamless native performance and modern user experiences.',
-      features: ['iOS & Android', 'React Native', 'Flutter', 'Progressive Web Apps'],
+      title: 'Cloud Infrastructure',
+      description: 'Scalable, secure, and resilient cloud architectures designed for high-availability enterprise workloads.',
+      icon: (
+        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+        </svg>
+      ),
     },
     {
       title: 'Product Design',
-      description: 'User-centered design systems and immersive digital experiences.',
-      features: ['UI/UX Design', 'Design Systems', 'Prototyping', 'User Research'],
+      description: 'User-centric UI/UX design that ensures intuitive experiences and higher engagement rates.',
+      icon: (
+        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+        </svg>
+      ),
     },
   ]
 
   return (
-    <section id="services" className="section-spacing bg-gray-50">
+    <section id="services" className="section-spacing bg-dark">
       <div className="section-container">
         {/* Section Header */}
         <motion.div
@@ -37,16 +44,16 @@ export default function Services() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16 md:mb-20"
         >
-          <h2 className="text-4xl md:text-6xl font-bold mb-6 text-gray-900">
-            Our Services
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+            Core Capabilities
           </h2>
-          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto text-balance">
-            Comprehensive technology solutions designed to transform your business
+          <p className="text-lg text-gray-400 max-w-3xl mx-auto">
+            End-to-end digital product engineering tailored for scale and performance.
           </p>
         </motion.div>
 
         {/* Services Grid */}
-        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
           {services.map((service, index) => (
             <motion.div
               key={service.title}
@@ -54,29 +61,20 @@ export default function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="card p-8 md:p-10 hover-lift group"
+              className="card p-8 md:p-10 group cursor-pointer"
             >
-              <h3 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">
+              <div className="text-primary mb-6 group-hover:scale-110 transition-transform duration-300">
+                {service.icon}
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-white">
                 {service.title}
               </h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">
+              <p className="text-gray-400 mb-6 leading-relaxed">
                 {service.description}
               </p>
               
-              {/* Features */}
-              <div className="flex flex-wrap gap-2">
-                {service.features.map((feature) => (
-                  <span
-                    key={feature}
-                    className="px-3 py-1.5 bg-gray-50 text-gray-700 text-sm font-medium rounded-lg border border-gray-100"
-                  >
-                    {feature}
-                  </span>
-                ))}
-              </div>
-
-              {/* Hover indicator */}
-              <div className="mt-6 flex items-center text-sm font-medium text-gray-400 group-hover:text-gray-900 transition-colors">
+              {/* Learn more link */}
+              <div className="flex items-center text-sm font-medium text-primary group-hover:gap-2 transition-all">
                 Learn more
                 <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

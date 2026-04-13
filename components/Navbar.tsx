@@ -14,10 +14,10 @@ export default function Navbar() {
   }, [])
 
   const navLinks = [
-    { name: 'About', href: '#about' },
     { name: 'Services', href: '#services' },
-    { name: 'Products', href: '#products' },
-    { name: 'Process', href: '#process' },
+    { name: 'Our Work', href: '#work' },
+    { name: 'About Us', href: '#about' },
+    { name: 'Insights', href: '#insights' },
   ]
 
   return (
@@ -26,7 +26,7 @@ export default function Navbar() {
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
       className={`fixed w-full z-50 transition-all duration-300 ${
-        scrolled ? 'glass shadow-soft' : 'bg-transparent'
+        scrolled ? 'glass shadow-lg' : 'bg-transparent'
       }`}
     >
       <div className="section-container">
@@ -36,9 +36,10 @@ export default function Navbar() {
             href="#"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="text-xl md:text-2xl font-bold text-gray-900"
+            className="flex items-center gap-2 text-xl md:text-2xl font-bold text-white"
           >
-            Asaase Labs
+            <span className="text-primary">⚡</span>
+            Asaase<span className="text-primary">Labs</span>
           </motion.a>
           
           {/* Desktop Navigation */}
@@ -47,29 +48,35 @@ export default function Navbar() {
               <a
                 key={link.name}
                 href={link.href}
-                className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition-all duration-200"
+                className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white rounded-lg hover:bg-dark-lighter transition-all duration-200"
               >
                 {link.name}
               </a>
             ))}
           </div>
 
-          {/* CTA Button */}
+          {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
+            <a
+              href="#login"
+              className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+            >
+              Client Login
+            </a>
             <motion.a
               href="#contact"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="px-5 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors duration-200"
+              className="px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-light transition-colors duration-200"
             >
-              Get Started
+              Contact Us
             </motion.a>
           </div>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors"
+            className="md:hidden p-2 text-gray-300 hover:text-white transition-colors"
             aria-label="Toggle menu"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,14 +97,14 @@ export default function Navbar() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
-              className="md:hidden overflow-hidden border-t border-gray-100"
+              className="md:hidden overflow-hidden border-t border-gray-800"
             >
               <div className="py-4 space-y-1">
                 {navLinks.map((link) => (
                   <a
                     key={link.name}
                     href={link.href}
-                    className="block px-4 py-3 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
+                    className="block px-4 py-3 text-sm font-medium text-gray-300 hover:text-white hover:bg-dark-lighter rounded-lg transition-colors"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {link.name}
@@ -105,10 +112,10 @@ export default function Navbar() {
                 ))}
                 <a
                   href="#contact"
-                  className="block px-4 py-3 bg-gray-900 text-white text-sm font-medium rounded-lg text-center mt-2"
+                  className="block px-4 py-3 bg-primary text-white text-sm font-medium rounded-lg text-center mt-2"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Get Started
+                  Contact Us
                 </a>
               </div>
             </motion.div>
