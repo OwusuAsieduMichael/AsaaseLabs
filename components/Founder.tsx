@@ -1,13 +1,125 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
+import { useAuth } from '@/app/context/AuthContext'
+import AuthModal from './AuthModal'
+import { useState } from 'react'
 
 export default function Founder() {
+  const { user, isAuthenticated, logout } = useAuth()
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false)
+  const [authModalOpen, setAuthModalOpen] = useState(false)
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login')
+
+  const handleSocialClick = (e: React.MouseEvent<HTMLAnchorElement>, url: string) => {
+    if (!isAuthenticated) {
+      e.preventDefault()
+      setShowAuthPrompt(true)
+    }
+  }
+
+  const handleAuthChoice = (mode: 'login' | 'signup') => {
+    setShowAuthPrompt(false)
+    setAuthMode(mode)
+    setAuthModalOpen(true)
+  }
+
   return (
-    <section className="section-spacing section-gradient-1 relative overflow-hidden">
+    <>
+      {/* Auth Prompt Modal */}
+      <AnimatePresence>
+        {showAuthPrompt && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowAuthPrompt(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            />
+
+            {/* Prompt Modal */}
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                transition={{ duration: 0.2 }}
+                className="relative w-full max-w-md bg-dark-card border border-gray-800 rounded-2xl shadow-2xl overflow-hidden p-8"
+              >
+                {/* Close Button */}
+                <button
+                  onClick={() => setShowAuthPrompt(false)}
+                  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-dark-lighter border border-gray-700 hover:border-gray-600 flex items-center justify-center transition-all"
+                  aria-label="Close"
+                >
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+
+                {/* Icon */}
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+
+                {/* Message */}
+                <h3 className="text-xl font-bold text-white text-center mb-3">
+                  Authentication Required
+                </h3>
+                <p className="text-gray-300 text-center mb-6">
+                  You need to sign up or log in to access the founder's social links and connect with us.
+                </p>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col gap-3">
+                  <button
+                    onClick={() => handleAuthChoice('signup')}
+                    className="w-full px-6 py-3 bg-primary text-white rounded-xl font-semibold hover:bg-primary-light transition-all duration-200 active:scale-95"
+                    style={{ boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)' }}
+                  >
+                    Sign Up
+                  </button>
+                  <button
+                    onClick={() => handleAuthChoice('login')}
+                    className="w-full px-6 py-3 bg-transparent text-gray-200 border-2 border-gray-700 rounded-xl font-semibold hover:bg-dark-lighter hover:border-gray-600 transition-all duration-200 active:scale-95"
+                  >
+                    Log In
+                  </button>
+                </div>
+
+                {/* Additional Info */}
+                <p className="text-xs text-gray-500 text-center mt-4">
+                  Create an account to unlock exclusive access
+                </p>
+              </motion.div>
+            </div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialMode={authMode}
+      />
+    <section className="section-spacing relative overflow-hidden">
+      {/* Background Image with Opacity */}
+      <div className="absolute inset-0 z-0">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: 'url(/background9.jpg)' }}
+        />
+        <div className="absolute inset-0 bg-[#0F172A]/85" />
+      </div>
+      
       {/* Background pattern */}
-      <div className="absolute inset-0 pattern-grid opacity-30"></div>
+      <div className="absolute inset-0 pattern-grid opacity-30 z-0"></div>
       
       <div className="section-container relative z-10">
         <div className="max-w-6xl mx-auto">
@@ -93,6 +205,7 @@ export default function Founder() {
                       href="https://www.linkedin.com/in/michael-owusu-asiedu-1973622b1/"
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={(e) => handleSocialClick(e, 'https://www.linkedin.com/in/michael-owusu-asiedu-1973622b1/')}
                       className="w-12 h-12 rounded-full bg-dark/80 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-primary/20 flex items-center justify-center transition-all group"
                       style={{ boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)' }}
                       aria-label="LinkedIn"
@@ -105,6 +218,7 @@ export default function Founder() {
                       href="https://github.com/OwusuAsieduMichael"
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={(e) => handleSocialClick(e, 'https://github.com/OwusuAsieduMichael')}
                       className="w-12 h-12 rounded-full bg-dark/80 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-primary/20 flex items-center justify-center transition-all group"
                       style={{ boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)' }}
                       aria-label="GitHub"
@@ -117,6 +231,7 @@ export default function Founder() {
                       href="https://twitter.com"
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={(e) => handleSocialClick(e, 'https://twitter.com')}
                       className="w-12 h-12 rounded-full bg-dark/80 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-primary/20 flex items-center justify-center transition-all group"
                       style={{ boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)' }}
                       aria-label="Twitter"
@@ -127,6 +242,7 @@ export default function Founder() {
                     </a>
                     <a
                       href="mailto:owusuasiedumichael9@gmail.com"
+                      onClick={(e) => handleSocialClick(e, 'mailto:owusuasiedumichael9@gmail.com')}
                       className="w-12 h-12 rounded-full bg-dark/80 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-primary/20 flex items-center justify-center transition-all group"
                       style={{ boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)' }}
                       aria-label="Email"
@@ -136,6 +252,35 @@ export default function Founder() {
                       </svg>
                     </a>
                   </div>
+
+                  {/* User Info & Logout (only show when authenticated) */}
+                  {isAuthenticated && (
+                    <>
+                      {/* Divider */}
+                      <div className="hidden md:block w-px h-12 bg-gray-600"></div>
+
+                      {/* User Info */}
+                      <div className="flex items-center gap-3 bg-dark/80 backdrop-blur-sm border-2 border-gray-600 rounded-xl px-4 py-2" style={{ boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)' }}>
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-xs font-bold">
+                            {user?.name.charAt(0).toUpperCase()}
+                          </div>
+                          <span className="text-sm font-semibold text-white" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)' }}>
+                            {user?.name}
+                          </span>
+                        </div>
+                        <button
+                          onClick={logout}
+                          className="ml-2 px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 hover:border-red-500/50 rounded-lg text-red-400 hover:text-red-300 text-xs font-semibold transition-all flex items-center gap-1"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                          </svg>
+                          Logout
+                        </button>
+                      </div>
+                    </>
+                  )}
 
                   {/* Divider */}
                   <div className="hidden md:block w-px h-12 bg-gray-600"></div>
@@ -162,5 +307,6 @@ export default function Founder() {
         </div>
       </div>
     </section>
+    </>
   )
 }

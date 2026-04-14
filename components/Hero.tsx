@@ -46,6 +46,26 @@ export default function Hero() {
         <div className="absolute inset-0 bg-dark/80"></div>
         <div className="absolute inset-0 pattern-grid opacity-10"></div>
         
+        {/* Navigation Arrows for Images */}
+        <button
+          onClick={() => setCurrentImageIndex((prev) => (prev - 1 + heroImages.length) % heroImages.length)}
+          className="absolute left-4 md:left-8 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-dark/60 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-dark/80 flex items-center justify-center transition-all group"
+          aria-label="Previous image"
+        >
+          <svg className="w-6 h-6 text-gray-300 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          onClick={() => setCurrentImageIndex((prev) => (prev + 1) % heroImages.length)}
+          className="absolute right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-dark/60 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-dark/80 flex items-center justify-center transition-all group"
+          aria-label="Next image"
+        >
+          <svg className="w-6 h-6 text-gray-300 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+        
         {/* Image indicators */}
         <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
           {heroImages.map((_, index) => (
@@ -95,9 +115,9 @@ export default function Hero() {
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-20">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <motion.a
-              href="#contact"
+              href="/get-started"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="btn-primary inline-flex items-center justify-center gap-2"
@@ -108,7 +128,7 @@ export default function Hero() {
               </svg>
             </motion.a>
             <motion.a
-              href="#work"
+              href="#products"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="btn-secondary"
@@ -116,6 +136,26 @@ export default function Hero() {
               View Our Work
             </motion.a>
           </div>
+
+          {/* Scroll Down Arrow - More Visible */}
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            className="mt-6 mb-12"
+          >
+            <a 
+              href="#about" 
+              className="inline-flex flex-col items-center gap-2 text-gray-300 hover:text-primary transition-colors group"
+              aria-label="Scroll to content"
+            >
+              <span className="text-sm font-semibold">Scroll Down</span>
+              <div className="w-10 h-10 rounded-full border-2 border-gray-600 group-hover:border-primary flex items-center justify-center transition-all">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </div>
+            </a>
+          </motion.div>
 
           {/* Trusted By */}
           <motion.div
@@ -136,19 +176,6 @@ export default function Hero() {
           </motion.div>
         </motion.div>
       </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        animate={{ y: [0, 8, 0] }}
-        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-      >
-        <a href="#about" className="text-gray-600 hover:text-gray-400 transition-colors" aria-label="Scroll to content">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-        </a>
-      </motion.div>
     </section>
   )
 }

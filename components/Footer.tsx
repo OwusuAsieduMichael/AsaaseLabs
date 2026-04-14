@@ -8,9 +8,9 @@ export default function Footer() {
   const footerLinks = {
     Company: [
       { name: 'About', href: '#about' },
-      { name: 'Our Work', href: '#work' },
+      { name: 'Our Work', href: '#products' },
       { name: 'Process', href: '#process' },
-      { name: 'Careers', href: '#careers' },
+      { name: 'Careers', href: '/careers' },
     ],
     Services: [
       { name: 'Software Development', href: '#services' },
@@ -20,6 +20,7 @@ export default function Footer() {
     ],
     Connect: [
       { name: 'Email', href: 'mailto:hello@asaaselabs.com' },
+      { name: 'WhatsApp', href: 'https://wa.me/233246259166' },
       { name: 'LinkedIn', href: '#' },
       { name: 'Twitter/X', href: '#' },
     ],

@@ -3,13 +3,16 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import AuthModal from './AuthModal'
+import { useAuth } from '@/app/context/AuthContext'
 
 export default function Navbar() {
+  const { user, isAuthenticated, logout } = useAuth()
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login')
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -18,6 +21,10 @@ export default function Navbar() {
   }, [])
 
   const navLinks = [
+    { 
+      name: 'Home', 
+      href: '/',
+    },
     { 
       name: 'Services', 
       href: '#services',
@@ -139,33 +146,93 @@ export default function Navbar() {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
-            <button
-              onClick={() => {
-                setAuthMode('login')
-                setAuthModalOpen(true)
-              }}
-              className="px-5 py-2.5 text-sm font-semibold text-gray-300 hover:text-white transition-colors"
-            >
-              Login
-            </button>
-            <button
-              onClick={() => {
-                setAuthMode('signup')
-                setAuthModalOpen(true)
-              }}
-              className="px-5 py-2.5 text-sm font-semibold text-gray-200 hover:text-white border-2 border-gray-700 rounded-xl hover:border-gray-600 hover:bg-dark-lighter transition-all"
-            >
-              Sign Up
-            </button>
-            <motion.a
-              href="#contact"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-xl hover:bg-primary-light transition-colors duration-200"
-              style={{ boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)' }}
-            >
-              Contact Us
-            </motion.a>
+            {isAuthenticated ? (
+              <>
+                <div className="relative">
+                  <button
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                    className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-gray-300 hover:text-white border-2 border-gray-700 rounded-xl hover:border-gray-600 hover:bg-dark-lighter transition-all"
+                  >
+                    <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center text-white text-xs font-bold">
+                      {user?.name.charAt(0).toUpperCase()}
+                    </div>
+                    <span>{user?.name}</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  {/* User Dropdown */}
+                  <AnimatePresence>
+                    {userMenuOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute top-full right-0 mt-3 w-56 bg-white rounded-2xl overflow-hidden"
+                        style={{ boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)' }}
+                      >
+                        <div className="py-2">
+                          <div className="px-5 py-3 border-b border-gray-100">
+                            <p className="text-sm font-semibold text-gray-900">{user?.name}</p>
+                            <p className="text-xs text-gray-500">{user?.email}</p>
+                          </div>
+                          <button
+                            onClick={() => {
+                              logout()
+                              setUserMenuOpen(false)
+                            }}
+                            className="w-full text-left px-5 py-3 text-sm font-semibold text-red-600 hover:bg-red-50 transition-all"
+                          >
+                            Sign Out
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+                <motion.a
+                  href="#contact"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-xl hover:bg-primary-light transition-colors duration-200"
+                  style={{ boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)' }}
+                >
+                  Contact Us
+                </motion.a>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => {
+                    setAuthMode('login')
+                    setAuthModalOpen(true)
+                  }}
+                  className="px-5 py-2.5 text-sm font-semibold text-gray-300 hover:text-white transition-colors"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => {
+                    setAuthMode('signup')
+                    setAuthModalOpen(true)
+                  }}
+                  className="px-5 py-2.5 text-sm font-semibold text-gray-200 hover:text-white border-2 border-gray-700 rounded-xl hover:border-gray-600 hover:bg-dark-lighter transition-all"
+                >
+                  Sign Up
+                </button>
+                <motion.a
+                  href="#contact"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-xl hover:bg-primary-light transition-colors duration-200"
+                  style={{ boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)' }}
+                >
+                  Contact Us
+                </motion.a>
+              </>
+            )}
           </div>
 
           {/* Auth Modal */}

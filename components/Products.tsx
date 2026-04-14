@@ -59,9 +59,18 @@ export default function Products() {
   ]
 
   return (
-    <section id="products" className="section-spacing section-gradient-2 relative overflow-hidden">
+    <section id="products" className="section-spacing relative overflow-hidden">
+      {/* Background Image with Opacity */}
+      <div className="absolute inset-0 z-0">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: 'url(/background6.jpg)' }}
+        />
+        <div className="absolute inset-0 bg-[#0F172A]/85" />
+      </div>
+      
       {/* Background pattern */}
-      <div className="absolute inset-0 pattern-dots opacity-40"></div>
+      <div className="absolute inset-0 pattern-dots opacity-40 z-0"></div>
       
       <div className="section-container relative z-10">
         {/* Section Header */}

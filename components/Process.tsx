@@ -67,9 +67,18 @@ export default function Process() {
   ]
 
   return (
-    <section id="process" className="section-spacing section-gradient-3 relative overflow-hidden">
+    <section id="process" className="section-spacing relative overflow-hidden">
+      {/* Background Image with Opacity */}
+      <div className="absolute inset-0 z-0">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: 'url(/background5.jpg)' }}
+        />
+        <div className="absolute inset-0 bg-[#0F172A]/85" />
+      </div>
+      
       {/* Background pattern */}
-      <div className="absolute inset-0 pattern-grid opacity-30"></div>
+      <div className="absolute inset-0 pattern-grid opacity-30 z-0"></div>
       
       <div className="section-container relative z-10">
         {/* Section Header */}

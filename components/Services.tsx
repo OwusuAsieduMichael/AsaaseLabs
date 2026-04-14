@@ -1,12 +1,14 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 
 export default function Services() {
   const services = [
     {
       title: 'Custom Software',
       description: 'Bespoke web and mobile applications built with modern stacks to solve complex operational challenges.',
+      link: '/services/custom-software',
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
@@ -16,6 +18,7 @@ export default function Services() {
     {
       title: 'Cloud Infrastructure',
       description: 'Scalable, secure, and resilient cloud architectures designed for high-availability enterprise workloads.',
+      link: '/services/cloud-infrastructure',
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
@@ -25,6 +28,7 @@ export default function Services() {
     {
       title: 'Product Design',
       description: 'User-centric UI/UX design that ensures intuitive experiences and higher engagement rates.',
+      link: '/services/product-design',
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
@@ -34,9 +38,18 @@ export default function Services() {
   ]
 
   return (
-    <section id="services" className="section-spacing section-gradient-1 relative overflow-hidden">
+    <section id="services" className="section-spacing relative overflow-hidden">
+      {/* Background Image with Opacity */}
+      <div className="absolute inset-0 z-0">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: 'url(/background3.jpg)' }}
+        />
+        <div className="absolute inset-0 bg-[#0F172A]/85" />
+      </div>
+      
       {/* Background pattern */}
-      <div className="absolute inset-0 pattern-grid opacity-30"></div>
+      <div className="absolute inset-0 pattern-grid opacity-30 z-0"></div>
       
       <div className="section-container relative z-10">
         {/* Section Header */}
@@ -77,12 +90,15 @@ export default function Services() {
               </p>
               
               {/* Learn more link */}
-              <div className="flex items-center text-sm font-semibold text-blue-400 group-hover:gap-2 transition-all">
+              <Link
+                href={service.link}
+                className="flex items-center text-sm font-semibold text-blue-400 group-hover:gap-2 transition-all"
+              >
                 Learn more
                 <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                 </svg>
-              </div>
+              </Link>
             </motion.div>
           ))}
         </div>

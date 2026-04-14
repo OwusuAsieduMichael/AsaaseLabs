@@ -4,9 +4,18 @@ import { motion } from 'framer-motion'
 
 export default function About() {
   return (
-    <section id="about" className="section-spacing section-gradient-2 relative overflow-hidden">
+    <section id="about" className="section-spacing relative overflow-hidden">
+      {/* Background Image with Opacity */}
+      <div className="absolute inset-0 z-0">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: 'url(/background2.jpg)' }}
+        />
+        <div className="absolute inset-0 bg-[#0F172A]/85" />
+      </div>
+      
       {/* Background pattern */}
-      <div className="absolute inset-0 pattern-dots opacity-30"></div>
+      <div className="absolute inset-0 pattern-dots opacity-30 z-0"></div>
       
       <div className="section-container relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
