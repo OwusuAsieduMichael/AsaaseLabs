@@ -6,29 +6,56 @@
   * {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
   
   body {
     @apply bg-dark text-gray-100;
     overflow-x: hidden;
+    font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
   }
   
   html {
     scroll-behavior: smooth;
   }
+  
+  /* High-DPI image rendering */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+  
+  /* Sharper text on all headings */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-rendering: optimizeLegibility;
+  }
 }
 
 @layer components {
   .btn-primary {
-    @apply px-6 py-3 bg-primary text-white rounded-xl font-medium transition-all duration-200 hover:bg-primary-light active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-dark;
+    @apply px-6 py-3 bg-primary text-white rounded-xl font-semibold transition-all duration-200 hover:bg-primary-light active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-dark;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+    letter-spacing: -0.01em;
+  }
+  
+  .btn-primary:hover {
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
   }
   
   .btn-secondary {
-    @apply px-6 py-3 bg-transparent text-gray-300 border border-gray-700 rounded-xl font-medium transition-all duration-200 hover:bg-dark-lighter hover:border-gray-600 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-dark;
+    @apply px-6 py-3 bg-transparent text-gray-200 border-2 border-gray-700 rounded-xl font-semibold transition-all duration-200 hover:bg-dark-lighter hover:border-gray-600 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-dark;
+    letter-spacing: -0.01em;
   }
   
   .card {
-    @apply bg-dark-card rounded-2xl border border-gray-800 transition-all duration-300 hover:border-gray-700 hover:bg-dark-lighter;
+    @apply bg-dark-card rounded-2xl border border-gray-800/80 transition-all duration-300 hover:border-gray-700 hover:bg-dark-lighter;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  }
+  
+  .card:hover {
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.3);
   }
   
   .section-container {
@@ -37,6 +64,20 @@
   
   .section-spacing {
     @apply py-20 md:py-32;
+    position: relative;
+  }
+  
+  /* Professional gradient backgrounds for sections */
+  .section-gradient-1 {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
+  }
+  
+  .section-gradient-2 {
+    background: linear-gradient(135deg, #1E293B 0%, #0F172A 50%, #1E293B 100%);
+  }
+  
+  .section-gradient-3 {
+    background: linear-gradient(to bottom, #0F172A 0%, #1a2332 50%, #0F172A 100%);
   }
 }
 
@@ -64,7 +105,12 @@
   }
   
   .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+    @apply transition-all duration-300 hover:-translate-y-1;
+    will-change: transform;
+  }
+  
+  .hover-lift:hover {
+    box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.5), 0 4px 8px 0 rgba(0, 0, 0, 0.4);
   }
   
   .focus-ring {
@@ -132,6 +178,23 @@
       linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
     background-size: 50px 50px;
+  }
+  
+  .pattern-grid-large {
+    background-image: 
+      linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
+  
+  .pattern-diagonal {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(255, 255, 255, 0.02) 40px,
+      rgba(255, 255, 255, 0.02) 80px
+    );
   }
   
   .hero-overlay {

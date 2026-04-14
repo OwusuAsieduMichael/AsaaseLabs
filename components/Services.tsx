@@ -34,8 +34,11 @@ export default function Services() {
   ]
 
   return (
-    <section id="services" className="section-spacing bg-dark">
-      <div className="section-container">
+    <section id="services" className="section-spacing section-gradient-1 relative overflow-hidden">
+      {/* Background pattern */}
+      <div className="absolute inset-0 pattern-grid opacity-30"></div>
+      
+      <div className="section-container relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -44,10 +47,10 @@ export default function Services() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16 md:mb-20"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight leading-[1.1]">
             Core Capabilities
           </h2>
-          <p className="text-lg text-gray-400 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto font-medium">
             End-to-end digital product engineering tailored for scale and performance.
           </p>
         </motion.div>
@@ -61,23 +64,23 @@ export default function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="card p-8 md:p-10 group cursor-pointer"
+              className="card p-8 md:p-10 group cursor-pointer border-l-4 border-blue-500 hover:border-blue-400 bg-gradient-to-br from-blue-500/10 to-transparent hover:from-blue-500/15 transition-all"
             >
-              <div className="text-primary mb-6 group-hover:scale-110 transition-transform duration-300">
+              <div className="text-blue-400 mb-6 group-hover:scale-110 transition-transform duration-300">
                 {service.icon}
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-white">
+              <h3 className="text-xl md:text-2xl font-bold mb-4 text-white tracking-tight">
                 {service.title}
               </h3>
-              <p className="text-gray-400 mb-6 leading-relaxed">
+              <p className="text-gray-300 mb-6 leading-relaxed font-medium">
                 {service.description}
               </p>
               
               {/* Learn more link */}
-              <div className="flex items-center text-sm font-medium text-primary group-hover:gap-2 transition-all">
+              <div className="flex items-center text-sm font-semibold text-blue-400 group-hover:gap-2 transition-all">
                 Learn more
                 <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                 </svg>
               </div>
             </motion.div>

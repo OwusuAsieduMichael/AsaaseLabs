@@ -1,15 +1,66 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react'
 
 export default function Hero() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  
+  // Array of hero background images
+  const heroImages = [
+    '/hero-big.jpg',
+    '/hero-big2.jpg',
+    '/hero-big3.jpg',
+  ]
+
+  // Auto-rotate images every 8 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => 
+        (prevIndex + 1) % heroImages.length
+      )
+    }, 8000) // 8 seconds
+
+    return () => clearInterval(interval)
+  }, [heroImages.length])
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-dark"></div>
-        <div className="absolute inset-0 pattern-grid opacity-20"></div>
-        <div className="absolute inset-0 hero-overlay"></div>
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Image slideshow with swipe effect */}
+        {heroImages.map((image, index) => (
+          <motion.div
+            key={image}
+            initial={{ x: '100%' }}
+            animate={{ 
+              x: currentImageIndex === index ? '0%' : currentImageIndex > index ? '-100%' : '100%',
+            }}
+            transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ 
+              backgroundImage: `url(${image})`,
+            }}
+          />
+        ))}
+        <div className="absolute inset-0 bg-dark/80"></div>
+        <div className="absolute inset-0 pattern-grid opacity-10"></div>
+        
+        {/* Image indicators */}
+        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentImageIndex(index)}
+              className={`h-1 rounded-full transition-all duration-300 ${
+                currentImageIndex === index 
+                  ? 'bg-primary w-8' 
+                  : 'bg-gray-600 w-8 hover:bg-gray-500'
+              }`}
+              aria-label={`View image ${index + 1}`}
+            />
+          ))}
+        </div>
       </div>
       
       <div className="section-container relative z-10 text-center py-32">
@@ -23,13 +74,14 @@ export default function Hero() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="inline-block px-4 py-2 text-sm font-medium text-gray-400 mb-8"
+            className="inline-flex items-center px-4 py-2 text-sm font-semibold text-primary bg-primary/10 border border-primary/20 rounded-full mb-8 backdrop-blur-sm"
           >
+            <span className="w-2 h-2 bg-primary rounded-full mr-2 animate-pulse"></span>
             Pioneering Digital Transformation in Africa
           </motion.div>
 
           {/* Main heading */}
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-balance leading-tight">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 text-balance leading-[1.05] tracking-tight">
             Building Africa's Next
             <br />
             Generation of
@@ -38,7 +90,7 @@ export default function Hero() {
           </h1>
           
           {/* Subheading */}
-          <p className="text-lg md:text-xl text-gray-400 mb-12 max-w-3xl mx-auto text-balance leading-relaxed">
+          <p className="text-lg md:text-xl text-gray-300 mb-12 max-w-3xl mx-auto text-balance leading-relaxed font-medium">
             We engineer scalable, high-performance software and digital infrastructure that empowers African enterprises to compete globally.
           </p>
 

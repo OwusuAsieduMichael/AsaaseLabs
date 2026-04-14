@@ -27,9 +27,15 @@ module.exports = {
         sans: ['-apple-system', 'BlinkMacSystemFont', 'Inter', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
       fontSize: {
-        'display-1': ['4.5rem', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '700' }],
-        'display-2': ['3.75rem', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '700' }],
-        'display-3': ['3rem', { lineHeight: '1.2', letterSpacing: '-0.01em', fontWeight: '700' }],
+        'display-1': ['4.5rem', { lineHeight: '1.05', letterSpacing: '-0.025em', fontWeight: '700' }],
+        'display-2': ['3.75rem', { lineHeight: '1.1', letterSpacing: '-0.022em', fontWeight: '700' }],
+        'display-3': ['3rem', { lineHeight: '1.15', letterSpacing: '-0.018em', fontWeight: '700' }],
+      },
+      letterSpacing: {
+        tighter: '-0.04em',
+        tight: '-0.02em',
+        normal: '0',
+        wide: '0.02em',
       },
       spacing: {
         '18': '4.5rem',

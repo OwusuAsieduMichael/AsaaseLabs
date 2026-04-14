@@ -27,11 +27,27 @@ export default function Footer() {
 
   return (
     <footer className="bg-dark border-t border-gray-800 relative overflow-hidden">
-      {/* Large background text */}
+      {/* Large background text with continuous scroll animation */}
       <div className="absolute bottom-0 left-0 right-0 overflow-hidden opacity-5 pointer-events-none">
-        <div className="text-[20rem] font-bold text-white leading-none">
-          Asaase
-        </div>
+        <motion.div
+          animate={{ x: [0, -1000] }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+          className="flex whitespace-nowrap"
+        >
+          <div className="text-[20rem] font-bold text-white leading-none pr-20">
+            AsaaseLabs
+          </div>
+          <div className="text-[20rem] font-bold text-white leading-none pr-20">
+            AsaaseLabs
+          </div>
+          <div className="text-[20rem] font-bold text-white leading-none pr-20">
+            AsaaseLabs
+          </div>
+        </motion.div>
       </div>
 
       <div className="section-container py-16 relative z-10">
@@ -44,7 +60,7 @@ export default function Footer() {
           >
             <div className="flex items-center gap-2 mb-4">
               <span className="text-primary text-2xl">⚡</span>
-              <div className="text-xl font-bold text-white">Asaase Labs</div>
+              <div className="text-xl font-bold text-white">AsaaseLabs</div>
             </div>
             <p className="text-sm text-gray-400 mb-6 leading-relaxed">
               Building Africa's next generation of digital solutions through innovative engineering and design.
@@ -80,7 +96,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-gray-500">
-            © {currentYear} Asaase Labs. All rights reserved.
+            © {currentYear} AsaaseLabs. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm">
             <a href="#" className="text-gray-500 hover:text-white transition-colors">
