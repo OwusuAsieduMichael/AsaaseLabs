@@ -489,7 +489,9 @@ export default function CustomSoftware() {
                 </svg>
               </Link>
               <a
-                href="mailto:hello@asaaselabs.tech?subject=Custom%20Software%20Project%20Inquiry"
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=hello%40asaaselabs.tech&su=Custom%20Software%20Project%20Inquiry"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="btn-secondary"
               >
                 Email Us

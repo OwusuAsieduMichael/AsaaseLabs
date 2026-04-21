@@ -21,7 +21,10 @@ export default function Footer() {
       { name: 'Product Design', href: '/services/product-design' },
     ],
     Connect: [
-      { name: 'Email', href: 'mailto:hello@asaaselabs.tech' },
+      {
+        name: 'Email',
+        href: 'https://mail.google.com/mail/?view=cm&fs=1&to=hello%40asaaselabs.tech&su=Contact%20AsaaseLabs',
+      },
       { name: 'WhatsApp', href: 'https://wa.me/233246259166' },
       { name: 'LinkedIn', href: 'https://www.linkedin.com/in/michaelowusuasiedu/' },
     ],

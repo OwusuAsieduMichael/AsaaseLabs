@@ -356,7 +356,12 @@ export default function AIMLService() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </Link>
-              <a href="mailto:hello@asaaselabs.tech?subject=AI%20%26%20Machine%20Learning%20Inquiry" className="btn-secondary">
+              <a
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=hello%40asaaselabs.tech&su=AI%20%26%20Machine%20Learning%20Inquiry"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary"
+              >
                 Email Us
               </a>
             </div>

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 
 const EMAIL = 'hello@asaaselabs.tech'
 const MAILTO =
-  'mailto:hello@asaaselabs.tech?subject=Project%20Inquiry%20from%20AsaaseLabs%20Website'
+  'https://mail.google.com/mail/?view=cm&fs=1&to=hello%40asaaselabs.tech&su=Project%20Inquiry%20from%20AsaaseLabs%20Website'
 export default function CTA() {
   return (
     <section id="contact" className="section-spacing relative overflow-hidden">
@@ -73,10 +73,10 @@ export default function CTA() {
                   <a
                     href={item.link}
                     target={
-                      item.label === 'WhatsApp' || item.label === 'Location' ? '_blank' : undefined
+                      item.link.startsWith('http') ? '_blank' : undefined
                     }
                     rel={
-                      item.label === 'WhatsApp' || item.label === 'Location'
+                      item.link.startsWith('http')
                         ? 'noopener noreferrer'
                         : undefined
                     }

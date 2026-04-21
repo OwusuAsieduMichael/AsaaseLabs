@@ -489,7 +489,9 @@ export default function ProductDesign() {
                 </svg>
               </Link>
               <a
-                href="mailto:hello@asaaselabs.tech"
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=hello%40asaaselabs.tech&su=Product%20Design%20Inquiry"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="btn-secondary"
               >
                 Email Us
