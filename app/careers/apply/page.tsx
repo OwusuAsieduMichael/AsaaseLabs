@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import PageBackNav from '@/components/PageBackNav'
 
 export default function ApplyPage() {
   const [formData, setFormData] = useState({
@@ -24,6 +25,7 @@ export default function ApplyPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const positions = [
     'Full-Stack Developer',
@@ -54,50 +56,37 @@ export default function ApplyPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSubmitError(null)
     setIsSubmitting(true)
 
     try {
-      // Create a hidden form and submit it to FormSubmit.co (free email service)
-      const form = document.createElement('form')
-      form.action = 'https://formsubmit.co/owusuasiedumichael9@gmail.com'
-      form.method = 'POST'
-      form.style.display = 'none'
-
-      // Add form fields
-      const fields = {
-        '_subject': `Job Application - ${formData.position} - ${formData.firstName} ${formData.lastName}`,
-        '_captcha': 'false',
-        '_template': 'table',
-        'First Name': formData.firstName,
-        'Last Name': formData.lastName,
-        'Email': formData.email,
-        'Phone': formData.phone,
-        'Position': formData.position,
-        'Location': formData.location,
-        'Experience': formData.experience,
-        'Availability': formData.availability,
-        'LinkedIn': formData.linkedIn || 'Not provided',
-        'Portfolio': formData.portfolio || 'Not provided',
-        'Cover Letter': formData.coverLetter,
-        'Resume': formData.resume ? formData.resume.name : 'No file uploaded',
+      const fd = new FormData()
+      fd.set('firstName', formData.firstName)
+      fd.set('lastName', formData.lastName)
+      fd.set('email', formData.email)
+      fd.set('phone', formData.phone)
+      fd.set('position', formData.position)
+      fd.set('location', formData.location)
+      fd.set('linkedIn', formData.linkedIn)
+      fd.set('portfolio', formData.portfolio)
+      fd.set('experience', formData.experience)
+      fd.set('availability', formData.availability)
+      fd.set('coverLetter', formData.coverLetter)
+      if (formData.resume) {
+        fd.set('resume', formData.resume)
       }
 
-      Object.entries(fields).forEach(([key, value]) => {
-        const input = document.createElement('input')
-        input.type = 'hidden'
-        input.name = key
-        input.value = value
-        form.appendChild(input)
-      })
+      const res = await fetch('/api/apply', { method: 'POST', body: fd })
+      const data = (await res.json()) as { success?: boolean; message?: string }
 
-      document.body.appendChild(form)
-      form.submit()
+      if (!res.ok || !data.success) {
+        setSubmitError(data.message || 'Something went wrong. Please try again.')
+        setIsSubmitting(false)
+        return
+      }
 
-      // Show success message
-      setIsSubmitting(false)
       setIsSubmitted(true)
-
-      // Reset form after 5 seconds
+      setIsSubmitting(false)
       setTimeout(() => {
         setIsSubmitted(false)
         setFormData({
@@ -115,39 +104,9 @@ export default function ApplyPage() {
           resume: null,
         })
       }, 5000)
-
     } catch (error) {
       console.error('Error submitting application:', error)
-      
-      // Fallback: Open email client
-      const emailBody = `
-NEW JOB APPLICATION
-
-PERSONAL INFORMATION:
-Name: ${formData.firstName} ${formData.lastName}
-Email: ${formData.email}
-Phone: ${formData.phone}
-
-POSITION DETAILS:
-Position: ${formData.position}
-Location: ${formData.location}
-Experience: ${formData.experience}
-Availability: ${formData.availability}
-
-PROFESSIONAL LINKS:
-LinkedIn: ${formData.linkedIn || 'Not provided'}
-Portfolio: ${formData.portfolio || 'Not provided'}
-
-COVER LETTER:
-${formData.coverLetter}
-
-RESUME: ${formData.resume ? formData.resume.name : 'No file uploaded'}
-      `
-      
-      const mailtoLink = `mailto:owusuasiedumichael9@gmail.com?subject=Job Application - ${encodeURIComponent(formData.position)} - ${encodeURIComponent(formData.firstName + ' ' + formData.lastName)}&body=${encodeURIComponent(emailBody)}`
-      window.open(mailtoLink, '_blank')
-      
-      alert('Please send the email that just opened in your email client to complete your application.')
+      setSubmitError('Network error. Check your connection and try again.')
       setIsSubmitting(false)
     }
   }
@@ -165,15 +124,9 @@ RESUME: ${formData.resume ? formData.resume.name : 'No file uploaded'}
             transition={{ duration: 0.6 }}
             className="max-w-4xl mx-auto text-center"
           >
-            <Link
-              href="/careers"
-              className="inline-flex items-center gap-2 text-primary hover:text-primary-light transition-colors mb-6"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Back to Careers
-            </Link>
+            <div className="mb-6 flex justify-center">
+              <PageBackNav fallbackHref="/careers" fallbackLabel="Careers" align="center" />
+            </div>
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">
               Job Application
             </h1>
@@ -213,6 +166,14 @@ RESUME: ${formData.resume ? formData.resume.name : 'No file uploaded'}
                 transition={{ duration: 0.6 }}
               >
                 <form onSubmit={handleSubmit} className="card p-8 md:p-10 space-y-8">
+                  {submitError && (
+                    <div
+                      role="alert"
+                      className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200"
+                    >
+                      {submitError}
+                    </div>
+                  )}
                   {/* Personal Information */}
                   <div>
                     <h3 className="text-xl font-bold text-white mb-6 pb-3 border-b border-gray-800">

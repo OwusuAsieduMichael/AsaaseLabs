@@ -47,7 +47,7 @@ export default function WhyChooseUs() {
   ]
 
   return (
-    <section className="section-spacing relative overflow-hidden">
+    <section id="why-choose-us" className="section-spacing relative overflow-hidden scroll-mt-24 md:scroll-mt-28">
       {/* Background Image with Opacity */}
       <div className="absolute inset-0 z-0">
         <div 

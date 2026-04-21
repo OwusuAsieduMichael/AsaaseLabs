@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import PageBackNav from '@/components/PageBackNav'
 
 export default function Careers() {
   const openPositions = [
@@ -145,6 +146,7 @@ export default function Careers() {
       <section className="pt-32 pb-16 bg-gradient-to-b from-dark to-dark-lighter relative overflow-hidden">
         <div className="absolute inset-0 pattern-grid opacity-10"></div>
         <div className="section-container relative z-10">
+          <PageBackNav fallbackHref="/" fallbackLabel="Home" align="center" className="mb-8" />
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

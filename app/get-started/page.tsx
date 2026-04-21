@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import PageBackNav from '@/components/PageBackNav'
 
 export default function GetStarted() {
   const [formData, setFormData] = useState({
@@ -19,6 +20,7 @@ export default function GetStarted() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
@@ -29,28 +31,44 @@ export default function GetStarted() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSubmitError(null)
     setIsSubmitting(true)
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500))
-
-    setIsSubmitting(false)
-    setIsSubmitted(true)
-
-    // Reset form after 5 seconds
-    setTimeout(() => {
-      setIsSubmitted(false)
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        company: '',
-        projectType: '',
-        description: '',
-        budget: '',
-        timeline: '',
+    try {
+      const res = await fetch('/api/project-inquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
       })
-    }, 5000)
+      const data = (await res.json()) as { success?: boolean; message?: string; devHint?: string }
+
+      if (!res.ok || !data.success) {
+        const base = data.message || 'Something went wrong. Please try again.'
+        setSubmitError(data.devHint ? `${base} (${data.devHint})` : base)
+        setIsSubmitting(false)
+        return
+      }
+
+      setIsSubmitting(false)
+      setIsSubmitted(true)
+      setTimeout(() => {
+        setIsSubmitted(false)
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          company: '',
+          projectType: '',
+          description: '',
+          budget: '',
+          timeline: '',
+        })
+      }, 5000)
+    } catch (err) {
+      console.error(err)
+      setSubmitError('Network error. Check your connection and try again.')
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -60,6 +78,7 @@ export default function GetStarted() {
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-dark to-dark-lighter">
         <div className="section-container">
+          <PageBackNav fallbackHref="/" fallbackLabel="Home" align="center" className="mb-8" />
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -113,6 +132,14 @@ export default function GetStarted() {
                 className="card p-8 md:p-12"
               >
                 <form onSubmit={handleSubmit} className="space-y-8">
+                  {submitError && (
+                    <div
+                      role="alert"
+                      className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200"
+                    >
+                      {submitError}
+                    </div>
+                  )}
                   {/* Personal Information */}
                   <div>
                     <h3 className="text-xl font-bold text-white mb-6 pb-3 border-b border-gray-800">
@@ -243,12 +270,10 @@ export default function GetStarted() {
                             className="w-full px-4 py-3 bg-dark-lighter border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                           >
                             <option value="">Select budget range</option>
-                            <option value="under-5k">Under $5,000</option>
-                            <option value="5k-10k">$5,000 - $10,000</option>
-                            <option value="10k-25k">$10,000 - $25,000</option>
-                            <option value="25k-50k">$25,000 - $50,000</option>
-                            <option value="50k-plus">$50,000+</option>
-                            <option value="flexible">Flexible</option>
+                            <option value="350-500">$350 – $500</option>
+                            <option value="550-1000">$550 – $1,000</option>
+                            <option value="2000-plus">$2,000+</option>
+                            <option value="negotiations">Negotiations — call us to discuss</option>
                           </select>
                         </div>
 

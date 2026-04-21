@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import AuthModal from './AuthModal'
+import StaffInboxBell from './StaffInboxBell'
 import { useAuth } from '@/app/context/AuthContext'
 
 export default function Navbar() {
@@ -27,41 +29,41 @@ export default function Navbar() {
     },
     { 
       name: 'Services', 
-      href: '#services',
+      href: '/#services',
       dropdown: [
-        { name: 'Custom Software', href: '#services' },
-        { name: 'Cloud Infrastructure', href: '#services' },
-        { name: 'Product Design', href: '#services' },
-        { name: 'AI & Machine Learning', href: '#services' },
+        { name: 'Custom Software', href: '/services/custom-software' },
+        { name: 'Cloud Infrastructure', href: '/services/cloud-infrastructure' },
+        { name: 'Product Design', href: '/services/product-design' },
+        { name: 'AI & Machine Learning', href: '/#services' },
       ]
     },
     { 
       name: 'Our Work', 
-      href: '#work',
+      href: '/#products',
       dropdown: [
-        { name: 'CareerLens', href: '#products' },
-        { name: 'KasaBridge', href: '#products' },
-        { name: 'GoXpress', href: '#products' },
-        { name: 'Lamla FrontDesk', href: '#products' },
+        { name: 'CareerLens', href: '/#products' },
+        { name: 'KasaBridge', href: '/#products' },
+        { name: 'GoXpress', href: '/#products' },
+        { name: 'Lamla FrontDesk', href: '/#products' },
       ]
     },
     { 
       name: 'About Us', 
-      href: '#about',
+      href: '/#about',
       dropdown: [
-        { name: 'Our Story', href: '#about' },
-        { name: 'Mission & Vision', href: '#about' },
-        { name: 'Our Process', href: '#process' },
-        { name: 'Why Choose Us', href: '#about' },
+        { name: 'Our Story', href: '/#about' },
+        { name: 'Mission & Vision', href: '/#about' },
+        { name: 'Our Process', href: '/#process' },
+        { name: 'Why Choose Us', href: '/#why-choose-us' },
       ]
     },
     { 
       name: 'Insights', 
-      href: '#insights',
+      href: '/insights',
       dropdown: [
-        { name: 'Blog', href: '#insights' },
-        { name: 'Case Studies', href: '#insights' },
-        { name: 'Resources', href: '#insights' },
+        { name: 'Blog', href: '/insights#blog' },
+        { name: 'Case Studies', href: '/insights#case-studies' },
+        { name: 'Resources', href: '/insights#resources' },
       ]
     },
   ]
@@ -76,30 +78,45 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-2 md:px-4 lg:px-6">
-        <div className="flex justify-between items-center h-16 md:h-20">
+        <div className="flex items-center gap-2 md:gap-3 min-w-0 h-20 md:h-24">
           {/* Logo */}
           <motion.a
-            href="#"
+            href="/"
+            aria-label="Asaase Labs home"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="flex items-center gap-2 text-xl md:text-2xl font-bold tracking-tight"
+            className="flex shrink-0 items-center gap-2 md:gap-3 min-w-0 -ml-2 md:-ml-3"
           >
-            <span className="text-primary text-2xl">⚡</span>
-            <span><span className="text-white">Asaase</span><span className="text-primary">Labs</span></span>
+            <Image
+              src="/asaase5.png"
+              alt=""
+              width={320}
+              height={320}
+              className="h-[4.5rem] w-auto md:h-[5.5rem] object-contain object-left shrink-0"
+              priority
+            />
+            <span
+              className={`font-bold tracking-tight whitespace-nowrap ${
+                isAuthenticated ? 'text-xl md:text-2xl' : 'text-2xl md:text-3xl'
+              }`}
+            >
+              <span className="text-white">Asaase</span>
+              <span className="text-primary">Labs</span>
+            </span>
           </motion.a>
           
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
+          {/* Desktop Navigation — centered flex band so tabs do not wrap */}
+          <div className="hidden md:flex flex-1 min-w-0 justify-center items-center gap-0 px-1 lg:px-2">
             {navLinks.map((link) => (
               <div
                 key={link.name}
-                className="relative"
+                className="relative shrink-0"
                 onMouseEnter={() => setActiveDropdown(link.name)}
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 <a
                   href={link.href}
-                  className="px-4 py-2 text-sm font-semibold text-gray-300 hover:text-white rounded-lg hover:bg-dark-lighter transition-all duration-200 flex items-center gap-1"
+                  className="px-2 lg:px-3 py-2 text-xs lg:text-sm font-semibold text-gray-300 hover:text-white rounded-lg hover:bg-dark-lighter transition-all duration-200 flex items-center gap-0.5 whitespace-nowrap"
                 >
                   {link.name}
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -144,20 +161,23 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* CTA Buttons */}
-          <div className="hidden md:flex items-center gap-3">
+          {/* CTA Buttons — compact + inset from center so nav keeps space */}
+          <div className="hidden md:flex shrink-0 items-center gap-1.5 lg:gap-2 pl-2 lg:pl-5 ml-auto">
             {isAuthenticated ? (
               <>
+                <StaffInboxBell />
                 <div className="relative">
                   <button
+                    type="button"
+                    title={user?.name}
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
-                    className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-gray-300 hover:text-white border-2 border-gray-700 rounded-xl hover:border-gray-600 hover:bg-dark-lighter transition-all"
+                    className="flex max-w-[9rem] lg:max-w-[11rem] items-center gap-1.5 rounded-xl border-2 border-gray-700 px-2 py-2 text-xs font-semibold text-gray-300 hover:border-gray-600 hover:bg-dark-lighter hover:text-white transition-all"
                   >
-                    <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center text-white text-xs font-bold">
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white">
                       {user?.name.charAt(0).toUpperCase()}
                     </div>
-                    <span>{user?.name}</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span className="min-w-0 flex-1 truncate text-left">{user?.name}</span>
+                    <svg className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
@@ -193,10 +213,10 @@ export default function Navbar() {
                   </AnimatePresence>
                 </div>
                 <motion.a
-                  href="#contact"
+                  href="/#contact"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-xl hover:bg-primary-light transition-colors duration-200"
+                  className="whitespace-nowrap rounded-xl bg-primary px-4 py-2 text-xs font-bold text-white hover:bg-primary-light lg:px-5 lg:py-2.5 lg:text-sm"
                   style={{ boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)' }}
                 >
                   Contact Us
@@ -209,7 +229,7 @@ export default function Navbar() {
                     setAuthMode('login')
                     setAuthModalOpen(true)
                   }}
-                  className="px-5 py-2.5 text-sm font-semibold text-gray-300 hover:text-white transition-colors"
+                  className="whitespace-nowrap px-3 py-2 text-xs font-semibold text-gray-300 hover:text-white lg:px-4 lg:text-sm"
                 >
                   Login
                 </button>
@@ -218,15 +238,15 @@ export default function Navbar() {
                     setAuthMode('signup')
                     setAuthModalOpen(true)
                   }}
-                  className="px-5 py-2.5 text-sm font-semibold text-gray-200 hover:text-white border-2 border-gray-700 rounded-xl hover:border-gray-600 hover:bg-dark-lighter transition-all"
+                  className="whitespace-nowrap rounded-xl border-2 border-gray-700 px-3 py-2 text-xs font-semibold text-gray-200 hover:border-gray-600 hover:bg-dark-lighter hover:text-white lg:px-4 lg:text-sm"
                 >
                   Sign Up
                 </button>
                 <motion.a
-                  href="#contact"
+                  href="/#contact"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-xl hover:bg-primary-light transition-colors duration-200"
+                  className="whitespace-nowrap rounded-xl bg-primary px-4 py-2 text-xs font-bold text-white hover:bg-primary-light lg:px-5 lg:py-2.5 lg:text-sm"
                   style={{ boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)' }}
                 >
                   Contact Us
@@ -242,10 +262,12 @@ export default function Navbar() {
             initialMode={authMode}
           />
 
-          {/* Mobile Menu Button */}
-          <button
+          {/* Mobile: staff inbox + menu */}
+          <div className="flex items-center gap-1 md:hidden">
+            {isAuthenticated && <StaffInboxBell />}
+            <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-gray-300 hover:text-white transition-colors"
+            className="p-2 text-gray-300 hover:text-white transition-colors"
             aria-label="Toggle menu"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -256,6 +278,7 @@ export default function Navbar() {
               )}
             </svg>
           </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
@@ -294,6 +317,28 @@ export default function Navbar() {
                     )}
                   </div>
                 ))}
+                {isAuthenticated ? (
+                  <>
+                    <a
+                      href="/team/inquiries"
+                      className="block px-4 py-3 text-sm font-medium text-gray-300 hover:text-white hover:bg-dark-lighter rounded-lg transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Team inbox
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        logout()
+                        setMobileMenuOpen(false)
+                      }}
+                      className="block w-full px-4 py-3 text-left text-sm font-medium text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                    >
+                      Sign out
+                    </button>
+                  </>
+                ) : (
+                  <>
                 <button
                   onClick={() => {
                     setAuthMode('login')
@@ -314,8 +359,10 @@ export default function Navbar() {
                 >
                   Sign Up
                 </button>
+                  </>
+                )}
                 <a
-                  href="#contact"
+                  href="/#contact"
                   className="block px-4 py-3 bg-primary text-white text-sm font-medium rounded-lg text-center mt-2"
                   onClick={() => setMobileMenuOpen(false)}
                 >

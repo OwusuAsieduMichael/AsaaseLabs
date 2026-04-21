@@ -7,7 +7,7 @@ import AuthModal from './AuthModal'
 import { useState } from 'react'
 
 export default function Founder() {
-  const { user, isAuthenticated, logout } = useAuth()
+  const { isAuthenticated } = useAuth()
   const [showAuthPrompt, setShowAuthPrompt] = useState(false)
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login')
@@ -202,10 +202,10 @@ export default function Founder() {
                   {/* Social Links with glow effect */}
                   <div className="flex gap-3">
                     <a
-                      href="https://www.linkedin.com/in/michael-owusu-asiedu-1973622b1/"
+                      href="https://www.linkedin.com/in/michaelowusuasiedu/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={(e) => handleSocialClick(e, 'https://www.linkedin.com/in/michael-owusu-asiedu-1973622b1/')}
+                      onClick={(e) => handleSocialClick(e, 'https://www.linkedin.com/in/michaelowusuasiedu/')}
                       className="w-12 h-12 rounded-full bg-dark/80 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-primary/20 flex items-center justify-center transition-all group"
                       style={{ boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)' }}
                       aria-label="LinkedIn"
@@ -228,19 +228,6 @@ export default function Founder() {
                       </svg>
                     </a>
                     <a
-                      href="https://twitter.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => handleSocialClick(e, 'https://twitter.com')}
-                      className="w-12 h-12 rounded-full bg-dark/80 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-primary/20 flex items-center justify-center transition-all group"
-                      style={{ boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)' }}
-                      aria-label="Twitter"
-                    >
-                      <svg className="w-5 h-5 text-gray-300 group-hover:text-primary transition-colors" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
-                      </svg>
-                    </a>
-                    <a
                       href="mailto:owusuasiedumichael9@gmail.com"
                       onClick={(e) => handleSocialClick(e, 'mailto:owusuasiedumichael9@gmail.com')}
                       className="w-12 h-12 rounded-full bg-dark/80 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-primary/20 flex items-center justify-center transition-all group"
@@ -253,36 +240,6 @@ export default function Founder() {
                     </a>
                   </div>
 
-                  {/* User Info & Logout (only show when authenticated) */}
-                  {isAuthenticated && (
-                    <>
-                      {/* Divider */}
-                      <div className="hidden md:block w-px h-12 bg-gray-600"></div>
-
-                      {/* User Info */}
-                      <div className="flex items-center gap-3 bg-dark/80 backdrop-blur-sm border-2 border-gray-600 rounded-xl px-4 py-2" style={{ boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)' }}>
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-xs font-bold">
-                            {user?.name.charAt(0).toUpperCase()}
-                          </div>
-                          <span className="text-sm font-semibold text-white" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)' }}>
-                            {user?.name}
-                          </span>
-                        </div>
-                        <button
-                          onClick={logout}
-                          className="ml-2 px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 hover:border-red-500/50 rounded-lg text-red-400 hover:text-red-300 text-xs font-semibold transition-all flex items-center gap-1"
-                        >
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                          </svg>
-                          Logout
-                        </button>
-                      </div>
-                    </>
-                  )}
-
-                  {/* Divider */}
                   <div className="hidden md:block w-px h-12 bg-gray-600"></div>
 
                   {/* Quick Stats */}

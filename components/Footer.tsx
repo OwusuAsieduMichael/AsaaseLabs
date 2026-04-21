@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 
 export default function Footer() {
@@ -7,22 +8,21 @@ export default function Footer() {
 
   const footerLinks = {
     Company: [
-      { name: 'About', href: '#about' },
-      { name: 'Our Work', href: '#products' },
-      { name: 'Process', href: '#process' },
+      { name: 'About', href: '/#about' },
+      { name: 'Our Work', href: '/#products' },
+      { name: 'Process', href: '/#process' },
       { name: 'Careers', href: '/careers' },
     ],
     Services: [
-      { name: 'Software Development', href: '#services' },
-      { name: 'Mobile Apps', href: '#services' },
-      { name: 'AI Systems', href: '#services' },
-      { name: 'Product Design', href: '#services' },
+      { name: 'Software Development', href: '/#services' },
+      { name: 'Mobile Apps', href: '/#services' },
+      { name: 'AI Systems', href: '/#services' },
+      { name: 'Product Design', href: '/#services' },
     ],
     Connect: [
-      { name: 'Email', href: 'mailto:hello@asaaselabs.com' },
+      { name: 'Email', href: 'mailto:hello@asaaselabs.tech' },
       { name: 'WhatsApp', href: 'https://wa.me/233246259166' },
-      { name: 'LinkedIn', href: '#' },
-      { name: 'Twitter/X', href: '#' },
+      { name: 'LinkedIn', href: 'https://www.linkedin.com/in/michaelowusuasiedu/' },
     ],
   }
 
@@ -59,9 +59,18 @@ export default function Footer() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-primary text-2xl">⚡</span>
-              <div className="text-xl font-bold text-white">AsaaseLabs</div>
+            <div className="flex flex-wrap items-center gap-3 mb-4 -ml-2">
+              <Image
+                src="/asaase5.png"
+                alt=""
+                width={320}
+                height={320}
+                className="h-24 w-auto object-contain object-left shrink-0"
+              />
+              <div className="text-2xl font-bold tracking-tight">
+                <span className="text-white">Asaase</span>
+                <span className="text-primary">Labs</span>
+              </div>
             </div>
             <p className="text-sm text-gray-400 mb-6 leading-relaxed">
               Building Africa's next generation of digital solutions through innovative engineering and design.
@@ -83,6 +92,8 @@ export default function Footer() {
                   <li key={link.name}>
                     <a
                       href={link.href}
+                      target={link.href.startsWith('http') ? '_blank' : undefined}
+                      rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                       className="text-sm text-gray-400 hover:text-white transition-colors"
                     >
                       {link.name}

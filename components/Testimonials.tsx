@@ -13,10 +13,10 @@ const testimonials = [
   },
   {
     id: 2,
-    name: 'Salima Bastimi',
-    role: 'CTO, InnovateCorp',
-    image: '/testimonial2.jpg',
-    text: 'Working with AsaaseLabs was a game-changer for our company. Their expertise in cloud infrastructure and custom software development helped us scale efficiently and securely.'
+    name: 'Mensah Isaac Nana Sam',
+    role: 'CEO/Founder - SmartHive Labs',
+    image: '/dhope.jpg',
+    text: 'Asaase Labs is one of the rare tech partners you can truly trust to handle everything from design workflows to full-scale development and seamless collaboration.'
   },
   {
     id: 3,
@@ -24,27 +24,6 @@ const testimonials = [
     role: 'Founder, AmassTechHub',
     image: '/testimonial3.jpg',
     text: 'The product design and development process was seamless. AsaaseLabs understood our needs perfectly and delivered a beautiful, user-friendly solution that our customers love.'
-  },
-  {
-    id: 4,
-    name: 'Michael Thompson',
-    role: 'Founder, FinanceFlow',
-    image: 'https://i.pravatar.cc/150?img=4',
-    text: 'Outstanding professionalism and technical expertise. AsaaseLabs built our entire platform from scratch, and their attention to detail and commitment to quality was remarkable.'
-  },
-  {
-    id: 5,
-    name: 'Lisa Anderson',
-    role: 'Director, HealthTech Solutions',
-    image: 'https://i.pravatar.cc/150?img=5',
-    text: 'AsaaseLabs delivered beyond our expectations. Their innovative approach and dedication to excellence made them the perfect partner for our digital transformation journey.'
-  },
-  {
-    id: 6,
-    name: 'James Wilson',
-    role: 'VP Engineering, DataStream',
-    image: 'https://i.pravatar.cc/150?img=6',
-    text: 'Exceptional team with deep technical knowledge. They helped us modernize our infrastructure and implement best practices that significantly improved our system performance.'
   }
 ]
 

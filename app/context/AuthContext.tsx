@@ -1,8 +1,21 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react'
+import type { User as SupabaseUser } from '@supabase/supabase-js'
+import { createSupabaseBrowserClient } from '@/lib/supabase/browser'
+
+export const AUTH_VERIFY_EMAIL = 'VERIFY_EMAIL'
 
 interface User {
+  id: string
   email: string
   name: string
 }
@@ -10,9 +23,10 @@ interface User {
 interface AuthContextType {
   user: User | null
   isAuthenticated: boolean
-  login: (email: string, password: string) => Promise<boolean>
-  signup: (name: string, email: string, password: string) => Promise<boolean>
-  logout: () => void
+  authReady: boolean
+  login: (email: string, password: string) => Promise<string | null>
+  signup: (name: string, email: string, password: string, company?: string) => Promise<string | null>
+  logout: () => Promise<void>
   openAuthModal: () => void
   closeAuthModal: () => void
   isAuthModalOpen: boolean
@@ -20,77 +34,118 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+function mapUser(u: SupabaseUser | null): User | null {
+  if (!u?.email) return null
+  const meta = u.user_metadata as { full_name?: string }
+  const fromMeta =
+    typeof meta?.full_name === 'string' && meta.full_name.trim() ? meta.full_name.trim() : ''
+  const name = fromMeta || u.email.split('@')[0] || 'User'
+  return { id: u.id, email: u.email, name }
+}
+
+function friendlyMessage(msg: string) {
+  const m = msg.toLowerCase()
+  if (m.includes('invalid login') || m.includes('invalid credentials')) {
+    return 'Invalid email or password.'
+  }
+  if (m.includes('email not confirmed')) {
+    return 'Please confirm your email before signing in.'
+  }
+  if (m.includes('user already registered')) {
+    return 'An account with this email already exists.'
+  }
+  return msg.length > 160 ? 'Something went wrong. Try again.' : msg
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
+  const [authReady, setAuthReady] = useState(false)
 
-  // Load user from localStorage on mount
-  useEffect(() => {
-    const storedUser = localStorage.getItem('asaase_user')
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
+  const supabase = useMemo(() => {
+    try {
+      return createSupabaseBrowserClient()
+    } catch {
+      return null
     }
   }, [])
 
-  const login = async (email: string, password: string): Promise<boolean> => {
-    // Check if user exists in localStorage
-    const users = JSON.parse(localStorage.getItem('asaase_users') || '[]')
-    const foundUser = users.find((u: any) => u.email === email && u.password === password)
-
-    if (foundUser) {
-      const userData = { email: foundUser.email, name: foundUser.name }
-      setUser(userData)
-      localStorage.setItem('asaase_user', JSON.stringify(userData))
-      return true
-    }
-    return false
-  }
-
-  const signup = async (name: string, email: string, password: string): Promise<boolean> => {
-    // Get existing users
-    const users = JSON.parse(localStorage.getItem('asaase_users') || '[]')
-    
-    // Check if user already exists
-    if (users.find((u: any) => u.email === email)) {
-      return false
+  useEffect(() => {
+    if (!supabase) {
+      setAuthReady(true)
+      return
     }
 
-    // Add new user
-    const newUser = { name, email, password }
-    users.push(newUser)
-    localStorage.setItem('asaase_users', JSON.stringify(users))
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(mapUser(session?.user ?? null))
+    })
 
-    // Auto login
-    const userData = { email, name }
-    setUser(userData)
-    localStorage.setItem('asaase_user', JSON.stringify(userData))
-    return true
-  }
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        setUser(mapUser(session?.user ?? null))
+      })
+      .finally(() => setAuthReady(true))
 
-  const logout = () => {
-    setUser(null)
-    localStorage.removeItem('asaase_user')
-  }
+    return () => subscription.unsubscribe()
+  }, [supabase])
 
-  const openAuthModal = () => setIsAuthModalOpen(true)
-  const closeAuthModal = () => setIsAuthModalOpen(false)
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        login,
-        signup,
-        logout,
-        openAuthModal,
-        closeAuthModal,
-        isAuthModalOpen,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const login = useCallback(
+    async (email: string, password: string) => {
+      if (!supabase) return 'Sign-in is not configured yet.'
+      const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+      if (error) return friendlyMessage(error.message)
+      return null
+    },
+    [supabase]
   )
+
+  const signup = useCallback(
+    async (name: string, email: string, password: string, company?: string) => {
+      if (!supabase) return 'Sign-up is not configured yet.'
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          data: {
+            full_name: name.trim(),
+            company: (company || '').trim(),
+          },
+        },
+      })
+      if (error) return friendlyMessage(error.message)
+      if (data.user && !data.session) return AUTH_VERIFY_EMAIL
+      return null
+    },
+    [supabase]
+  )
+
+  const logout = useCallback(async () => {
+    if (!supabase) return
+    await supabase.auth.signOut()
+  }, [supabase])
+
+  const openAuthModal = useCallback(() => setIsAuthModalOpen(true), [])
+  const closeAuthModal = useCallback(() => setIsAuthModalOpen(false), [])
+
+  const value = useMemo(
+    () => ({
+      user,
+      isAuthenticated: !!user,
+      authReady,
+      login,
+      signup,
+      logout,
+      openAuthModal,
+      closeAuthModal,
+      isAuthModalOpen,
+    }),
+    [user, isAuthModalOpen, authReady, login, signup, logout, openAuthModal, closeAuthModal]
+  )
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {
