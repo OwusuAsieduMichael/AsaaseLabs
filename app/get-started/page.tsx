@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import PageBackNav from '@/components/PageBackNav'
+import ConsentModal from '@/components/ConsentModal'
 
 export default function GetStarted() {
   const [formData, setFormData] = useState({
@@ -13,32 +14,83 @@ export default function GetStarted() {
     phone: '',
     company: '',
     projectType: '',
+    projectTypeOther: '',
     description: '',
     budget: '',
     timeline: '',
+    descriptionFile: null as File | null,
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [hasAcceptedLegal, setHasAcceptedLegal] = useState(false)
+  const [showConsentModal, setShowConsentModal] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    })
+    const { name, value } = e.target
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(name === 'projectType' && value !== 'other' ? { projectTypeOther: '' } : {}),
+    }))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null
+    setFormData((prev) => ({ ...prev, descriptionFile: file }))
+  }
+
+  const resetSubmissionForm = () => {
+    setIsSubmitted(false)
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      company: '',
+      projectType: '',
+      projectTypeOther: '',
+      description: '',
+      budget: '',
+      timeline: '',
+      descriptionFile: null,
+    })
+    setHasAcceptedLegal(false)
+    setSubmitError(null)
+  }
+
+  const submitProjectInquiry = async () => {
     setSubmitError(null)
     setIsSubmitting(true)
 
     try {
+      if (!formData.description.trim() && !formData.descriptionFile) {
+        setSubmitError('Please provide project description text or upload a project description file.')
+        setIsSubmitting(false)
+        return
+      }
+      const fd = new FormData()
+      fd.set('name', formData.name)
+      fd.set('email', formData.email)
+      fd.set('phone', formData.phone)
+      fd.set('company', formData.company)
+      fd.set(
+        'projectType',
+        formData.projectType === 'other' && formData.projectTypeOther.trim()
+          ? `other: ${formData.projectTypeOther.trim()}`
+          : formData.projectType
+      )
+      fd.set('description', formData.description)
+      fd.set('budget', formData.budget)
+      fd.set('timeline', formData.timeline)
+      fd.set('termsAccepted', 'true')
+      if (formData.descriptionFile) {
+        fd.set('descriptionFile', formData.descriptionFile)
+      }
+
       const res = await fetch('/api/project-inquiry', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: fd,
       })
       const data = (await res.json()) as { success?: boolean; message?: string; devHint?: string }
 
@@ -51,24 +103,20 @@ export default function GetStarted() {
 
       setIsSubmitting(false)
       setIsSubmitted(true)
-      setTimeout(() => {
-        setIsSubmitted(false)
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          company: '',
-          projectType: '',
-          description: '',
-          budget: '',
-          timeline: '',
-        })
-      }, 5000)
     } catch (err) {
       console.error(err)
       setSubmitError('Network error. Check your connection and try again.')
       setIsSubmitting(false)
     }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!hasAcceptedLegal) {
+      setShowConsentModal(true)
+      return
+    }
+    await submitProjectInquiry()
   }
 
   return (
@@ -109,7 +157,7 @@ export default function GetStarted() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="card p-12 text-center"
+                className="card p-12 text-center border-l-4 border-primary bg-gradient-to-br from-primary/10 to-transparent"
               >
                 <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
                   <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -123,6 +171,13 @@ export default function GetStarted() {
                 <p className="text-gray-400 text-sm">
                   We will respond within 24 hours with next steps.
                 </p>
+                <button
+                  type="button"
+                  onClick={resetSubmissionForm}
+                  className="mt-6 inline-flex items-center rounded-lg border border-primary/40 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary hover:bg-primary/20 transition-colors"
+                >
+                  Start New Submission
+                </button>
               </motion.div>
             ) : (
               <motion.div
@@ -239,21 +294,61 @@ export default function GetStarted() {
                           <option value="other">Other</option>
                         </select>
                       </div>
+                      {formData.projectType === 'other' && (
+                        <div>
+                          <label htmlFor="projectTypeOther" className="block text-sm font-semibold text-gray-300 mb-2">
+                            Please specify <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="projectTypeOther"
+                            name="projectTypeOther"
+                            value={formData.projectTypeOther}
+                            onChange={handleChange}
+                            required={formData.projectType === 'other'}
+                            className="w-full px-4 py-3 bg-dark-lighter border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                            placeholder="Enter your project type"
+                          />
+                        </div>
+                      )}
 
                       <div>
                         <label htmlFor="description" className="block text-sm font-semibold text-gray-300 mb-2">
-                          Project Description <span className="text-red-500">*</span>
+                          Project Description <span className="text-gray-500 text-xs">(Optional if file is uploaded)</span>
                         </label>
                         <textarea
                           id="description"
                           name="description"
                           value={formData.description}
                           onChange={handleChange}
-                          required
+                          required={!formData.descriptionFile}
                           rows={5}
                           className="w-full px-4 py-3 bg-dark-lighter border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
                           placeholder="Please describe your project requirements, goals, and any specific features you need..."
                         />
+                      </div>
+
+                      <div>
+                        <label htmlFor="descriptionFile" className="block text-sm font-semibold text-gray-300 mb-2">
+                          Project Description File <span className="text-gray-500 text-xs">(Optional if text is provided)</span>
+                        </label>
+                        <input
+                          type="file"
+                          id="descriptionFile"
+                          name="descriptionFile"
+                          onChange={handleFileChange}
+                          accept=".pdf,.doc,.docx,.txt,.md"
+                          required={!formData.description.trim()}
+                          className="w-full px-4 py-3 bg-dark-lighter border border-gray-700 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-light file:cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                        />
+                        <p className="text-xs text-gray-500 mt-2">
+                          Accepted formats: PDF, DOC, DOCX, TXT, MD (Max 10MB)
+                        </p>
+                        {formData.descriptionFile && (
+                          <p className="text-sm text-primary mt-2">
+                            Selected: {formData.descriptionFile.name}
+                          </p>
+                        )}
                       </div>
 
                       <div className="grid md:grid-cols-2 gap-6">
@@ -326,7 +421,15 @@ export default function GetStarted() {
                       )}
                     </button>
                     <p className="text-center text-sm text-gray-400 mt-4">
-                      By submitting this form, you agree to our terms of service and privacy policy.
+                      By submitting this form, you agree to our{' '}
+                      <a href="/terms-of-service" className="text-primary hover:text-primary-light underline">
+                        Terms of Service
+                      </a>{' '}
+                      and{' '}
+                      <a href="/privacy-policy" className="text-primary hover:text-primary-light underline">
+                        Privacy Policy
+                      </a>
+                      .
                     </p>
                   </div>
                 </form>
@@ -371,6 +474,19 @@ export default function GetStarted() {
           </div>
         </div>
       </section>
+
+      <ConsentModal
+        isOpen={showConsentModal}
+        title="Review Terms Before Submission"
+        description="Before we process your project request, you need to review and accept our legal terms."
+        accepted={hasAcceptedLegal}
+        onAcceptedChange={setHasAcceptedLegal}
+        onClose={() => setShowConsentModal(false)}
+        onConfirm={async () => {
+          setShowConsentModal(false)
+          await submitProjectInquiry()
+        }}
+      />
 
       <Footer />
     </main>

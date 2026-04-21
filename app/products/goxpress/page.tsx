@@ -111,13 +111,14 @@ export default function GoXpressPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.button
+              <motion.a
+                href="/get-started"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-xl hover:opacity-90 transition-all"
               >
                 Get Started
-              </motion.button>
+              </motion.a>
               <motion.a
                 href="#features"
                 whileHover={{ scale: 1.02 }}
@@ -321,19 +322,19 @@ export default function GoXpressPage() {
               Join businesses already optimizing their delivery operations with GoXpress. Get started today!
             </p>
             
-            <form className="max-w-md mx-auto flex flex-col sm:flex-row gap-3">
+            <div className="max-w-md mx-auto flex flex-col sm:flex-row gap-3">
               <input
                 type="email"
                 placeholder="Enter your email"
                 className="flex-1 px-6 py-4 bg-dark border-2 border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 transition-colors"
               />
-              <button
-                type="submit"
+              <Link
+                href="/get-started"
                 className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-xl hover:opacity-90 transition-all whitespace-nowrap"
               >
                 Get Started
-              </button>
-            </form>
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>

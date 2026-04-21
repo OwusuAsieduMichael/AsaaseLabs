@@ -10,7 +10,7 @@ export default function Services() {
       description: 'Bespoke web and mobile applications built with modern stacks to solve complex operational challenges.',
       link: '/services/custom-software',
       icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
         </svg>
       ),
@@ -20,8 +20,18 @@ export default function Services() {
       description: 'Scalable, secure, and resilient cloud architectures designed for high-availability enterprise workloads.',
       link: '/services/cloud-infrastructure',
       icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+        </svg>
+      ),
+    },
+    {
+      title: 'AI & Machine Learning',
+      description: 'Intelligent automation, predictive analytics, and AI integrations that turn data into practical business outcomes.',
+      link: '/services/ai-ml',
+      icon: (
+        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 3v2.25M14.25 3v2.25M4.5 9.75h15M6.75 6.75h10.5a2.25 2.25 0 012.25 2.25v8.25a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 17.25V9a2.25 2.25 0 012.25-2.25zm2.25 6.75h.008v.008H9v-.008zm3 0h.008v.008H12v-.008zm3 0h.008v.008H15v-.008z" />
         </svg>
       ),
     },
@@ -30,7 +40,7 @@ export default function Services() {
       description: 'User-centric UI/UX design that ensures intuitive experiences and higher engagement rates.',
       link: '/services/product-design',
       icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
         </svg>
       ),
@@ -69,7 +79,7 @@ export default function Services() {
         </motion.div>
 
         {/* Services Grid */}
-        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-5">
           {services.map((service, index) => (
             <motion.div
               key={service.title}
@@ -77,15 +87,15 @@ export default function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="card p-8 md:p-10 group cursor-pointer border-l-4 border-blue-500 hover:border-blue-400 bg-gradient-to-br from-blue-500/10 to-transparent hover:from-blue-500/15 transition-all"
+              className="card p-6 md:p-7 group cursor-pointer border-l-4 border-blue-500 hover:border-blue-400 bg-gradient-to-br from-blue-500/10 to-transparent hover:from-blue-500/15 transition-all"
             >
-              <div className="text-blue-400 mb-6 group-hover:scale-110 transition-transform duration-300">
+              <div className="text-blue-400 mb-4 group-hover:scale-110 transition-transform duration-300">
                 {service.icon}
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-4 text-white tracking-tight">
+              <h3 className="text-lg md:text-xl font-bold mb-3 text-white tracking-tight">
                 {service.title}
               </h3>
-              <p className="text-gray-300 mb-6 leading-relaxed font-medium">
+              <p className="text-sm md:text-base text-gray-300 mb-5 leading-relaxed font-medium">
                 {service.description}
               </p>
               

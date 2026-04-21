@@ -8,16 +8,17 @@ export default function Footer() {
 
   const footerLinks = {
     Company: [
+      { name: 'What we do', href: '/what-we-do' },
       { name: 'About', href: '/#about' },
       { name: 'Our Work', href: '/#products' },
       { name: 'Process', href: '/#process' },
       { name: 'Careers', href: '/careers' },
     ],
     Services: [
-      { name: 'Software Development', href: '/#services' },
+      { name: 'Software Development', href: '/services/custom-software' },
       { name: 'Mobile Apps', href: '/#services' },
-      { name: 'AI Systems', href: '/#services' },
-      { name: 'Product Design', href: '/#services' },
+      { name: 'AI Systems', href: '/services/ai-ml' },
+      { name: 'Product Design', href: '/services/product-design' },
     ],
     Connect: [
       { name: 'Email', href: 'mailto:hello@asaaselabs.tech' },
@@ -111,10 +112,10 @@ export default function Footer() {
             © {currentYear} AsaaseLabs. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm">
-            <a href="#" className="text-gray-500 hover:text-white transition-colors">
+            <a href="/privacy-policy" className="text-gray-500 hover:text-white transition-colors">
               Privacy Policy
             </a>
-            <a href="#" className="text-gray-500 hover:text-white transition-colors">
+            <a href="/terms-of-service" className="text-gray-500 hover:text-white transition-colors">
               Terms of Service
             </a>
           </div>

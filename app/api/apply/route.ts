@@ -1,9 +1,19 @@
 import { randomUUID } from 'crypto'
 import { NextResponse } from 'next/server'
-import { createSupabaseAdmin, getResumeBucket } from '@/lib/supabase/admin'
-import { buildJobApplicationEmail, sendTeamEmail } from '@/lib/email/notify'
+import {
+  createSupabaseAdmin,
+  getJobAttachmentBucket,
+  getResumeBucket,
+} from '@/lib/supabase/admin'
+import {
+  buildApplicationReceivedEmail,
+  buildJobApplicationEmail,
+  sendApplicantEmail,
+  sendTeamEmail,
+} from '@/lib/email/notify'
 
 const MAX_RESUME_BYTES = 10 * 1024 * 1024
+const MAX_COVER_LETTER_FILE_BYTES = 10 * 1024 * 1024
 
 function str(fd: FormData, key: string, max: number) {
   const v = fd.get(key)
@@ -14,6 +24,28 @@ function str(fd: FormData, key: string, max: number) {
 function safeFileName(name: string) {
   const n = name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 180)
   return n || 'resume.pdf'
+}
+
+async function ensureBucket(
+  supabase: ReturnType<typeof createSupabaseAdmin>,
+  bucket: string,
+  fileSizeLimit: number
+) {
+  const { data, error } = await supabase.storage.getBucket(bucket)
+  if (!error && data?.id) {
+    return { ok: true as const }
+  }
+
+  const { error: createError } = await supabase.storage.createBucket(bucket, {
+    public: false,
+    fileSizeLimit: `${fileSizeLimit}`,
+  })
+
+  if (createError && !/already exists/i.test(createError.message || '')) {
+    return { ok: false as const, error: createError }
+  }
+
+  return { ok: true as const }
 }
 
 export async function POST(request: Request) {
@@ -41,10 +73,29 @@ export async function POST(request: Request) {
     const experience = str(formData, 'experience', 80)
     const availability = str(formData, 'availability', 120)
     const coverLetter = str(formData, 'coverLetter', 20000)
+    const coverLetterFile = formData.get('coverLetterFile')
+    const termsAcceptedRaw = formData.get('termsAccepted')
+    const termsAccepted =
+      typeof termsAcceptedRaw === 'string' && termsAcceptedRaw.toLowerCase() === 'true'
 
     if (!firstName || !lastName || !email || !position) {
       return NextResponse.json(
         { success: false, message: 'Please fill in all required fields.' },
+        { status: 400 }
+      )
+    }
+    if (!coverLetter && (!coverLetterFile || typeof coverLetterFile === 'string' || coverLetterFile.size === 0)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Please provide a cover letter text or upload a cover letter file.',
+        },
+        { status: 400 }
+      )
+    }
+    if (!termsAccepted) {
+      return NextResponse.json(
+        { success: false, message: 'Please accept the Terms of Service and Privacy Policy to continue.' },
         { status: 400 }
       )
     }
@@ -64,18 +115,49 @@ export async function POST(request: Request) {
     }
 
     const id = randomUUID()
-    const bucket = getResumeBucket()
-    const fileName = safeFileName(resume.name)
-    const objectPath = `${id}/${fileName}`
+    const resumeBucket = getResumeBucket()
+    const attachmentBucket = getJobAttachmentBucket()
+    const resumeFileName = safeFileName(resume.name)
+    const resumePath = `${id}/${resumeFileName}`
 
-    const buffer = Buffer.from(await resume.arrayBuffer())
-    const { error: uploadError } = await supabase.storage.from(bucket).upload(objectPath, buffer, {
-      contentType: resume.type || 'application/octet-stream',
+    const resumeBucketReady = await ensureBucket(supabase, resumeBucket, MAX_RESUME_BYTES)
+    if (!resumeBucketReady.ok) {
+      console.error('Resume bucket setup failed:', resumeBucketReady.error)
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            'Could not prepare resume storage. Please try again shortly, or contact support if the issue persists.',
+        },
+        { status: 500 }
+      )
+    }
+    const attachmentBucketReady = await ensureBucket(
+      supabase,
+      attachmentBucket,
+      MAX_COVER_LETTER_FILE_BYTES
+    )
+    if (!attachmentBucketReady.ok) {
+      console.error('Attachment bucket setup failed:', attachmentBucketReady.error)
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            'Could not prepare attachment storage. Please try again shortly, or contact support if the issue persists.',
+        },
+        { status: 500 }
+      )
+    }
+
+    const resumeType = resume.type || 'application/octet-stream'
+    const resumeBuffer = Buffer.from(await resume.arrayBuffer())
+    const { error: resumeUploadError } = await supabase.storage.from(resumeBucket).upload(resumePath, resumeBuffer, {
+      contentType: resumeType,
       upsert: false,
     })
 
-    if (uploadError) {
-      console.error('Resume upload failed:', uploadError)
+    if (resumeUploadError) {
+      console.error('Resume upload failed:', resumeUploadError)
       return NextResponse.json(
         {
           success: false,
@@ -84,6 +166,43 @@ export async function POST(request: Request) {
         },
         { status: 500 }
       )
+    }
+
+    let coverLetterFilePath: string | null = null
+    let coverLetterFileName = ''
+    let coverLetterFileType = ''
+    let coverLetterFileSize = 0
+    if (coverLetterFile && typeof coverLetterFile !== 'string' && coverLetterFile.size > 0) {
+      if (coverLetterFile.size > MAX_COVER_LETTER_FILE_BYTES) {
+        await supabase.storage.from(resumeBucket).remove([resumePath])
+        return NextResponse.json(
+          { success: false, message: 'Cover letter file is too large (max 10 MB).' },
+          { status: 400 }
+        )
+      }
+      coverLetterFileName = safeFileName(coverLetterFile.name)
+      coverLetterFilePath = `${id}/cover-letter-${coverLetterFileName}`
+      coverLetterFileType = coverLetterFile.type || 'application/octet-stream'
+      coverLetterFileSize = coverLetterFile.size
+      const coverLetterBuffer = Buffer.from(await coverLetterFile.arrayBuffer())
+      const { error: coverUploadError } = await supabase
+        .storage
+        .from(attachmentBucket)
+        .upload(coverLetterFilePath, coverLetterBuffer, {
+          contentType: coverLetterFileType,
+          upsert: false,
+        })
+      if (coverUploadError) {
+        await supabase.storage.from(resumeBucket).remove([resumePath])
+        console.error('Cover letter file upload failed:', coverUploadError)
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Could not upload cover letter file. Please retry with another file.',
+          },
+          { status: 500 }
+        )
+      }
     }
 
     const { error: insertError } = await supabase.from('job_applications').insert({
@@ -100,12 +219,21 @@ export async function POST(request: Request) {
       availability: availability || null,
       cover_letter: coverLetter || null,
       resume_file_name: resume.name.slice(0, 300),
-      resume_storage_path: objectPath,
+      resume_storage_path: resumePath,
+      resume_file_type: resumeType,
+      resume_file_size_bytes: resume.size,
+      cover_letter_file_name: coverLetterFileName || null,
+      cover_letter_storage_path: coverLetterFilePath,
+      cover_letter_file_type: coverLetterFileType || null,
+      cover_letter_file_size_bytes: coverLetterFileSize || null,
       source: 'website',
     })
 
     if (insertError) {
-      await supabase.storage.from(bucket).remove([objectPath])
+      await supabase.storage.from(resumeBucket).remove([resumePath])
+      if (coverLetterFilePath) {
+        await supabase.storage.from(attachmentBucket).remove([coverLetterFilePath])
+      }
       console.error('job_applications insert failed:', insertError)
       return NextResponse.json(
         { success: false, message: 'Could not save application. Try again later.' },
@@ -127,9 +255,15 @@ export async function POST(request: Request) {
       availability,
       coverLetterPreview: coverPreview,
       resumeFileName: resume.name.slice(0, 300),
+      resumeFileType: resumeType,
+      coverLetterFileName,
     })
     sendTeamEmail({ subject, html, replyTo: email }).then((r) => {
       if (!r.sent) console.warn('[email] job application notification:', r.reason)
+    })
+    const applicantEmail = buildApplicationReceivedEmail({ firstName, position })
+    sendApplicantEmail({ to: email, subject: applicantEmail.subject, html: applicantEmail.html }).then((r) => {
+      if (!r.sent) console.warn('[email] application receipt email:', r.reason)
     })
 
     return NextResponse.json({ success: true, message: 'Application submitted successfully.' })

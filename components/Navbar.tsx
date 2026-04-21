@@ -34,7 +34,7 @@ export default function Navbar() {
         { name: 'Custom Software', href: '/services/custom-software' },
         { name: 'Cloud Infrastructure', href: '/services/cloud-infrastructure' },
         { name: 'Product Design', href: '/services/product-design' },
-        { name: 'AI & Machine Learning', href: '/#services' },
+        { name: 'AI & Machine Learning', href: '/services/ai-ml' },
       ]
     },
     { 
@@ -51,6 +51,7 @@ export default function Navbar() {
       name: 'About Us', 
       href: '/#about',
       dropdown: [
+        { name: 'What we do', href: '/what-we-do' },
         { name: 'Our Story', href: '/#about' },
         { name: 'Mission & Vision', href: '/#about' },
         { name: 'Our Process', href: '/#process' },
@@ -119,9 +120,11 @@ export default function Navbar() {
                   className="px-2 lg:px-3 py-2 text-xs lg:text-sm font-semibold text-gray-300 hover:text-white rounded-lg hover:bg-dark-lighter transition-all duration-200 flex items-center gap-0.5 whitespace-nowrap"
                 >
                   {link.name}
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-                  </svg>
+                  {link.dropdown && (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  )}
                 </a>
 
                 {/* Dropdown Menu */}
@@ -324,7 +327,14 @@ export default function Navbar() {
                       className="block px-4 py-3 text-sm font-medium text-gray-300 hover:text-white hover:bg-dark-lighter rounded-lg transition-colors"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      Team inbox
+                      Team inquiries
+                    </a>
+                    <a
+                      href="/team/applications"
+                      className="block px-4 py-3 text-sm font-medium text-gray-300 hover:text-white hover:bg-dark-lighter rounded-lg transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Job applications
                     </a>
                     <button
                       type="button"

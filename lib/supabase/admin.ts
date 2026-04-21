@@ -19,3 +19,11 @@ export function createSupabaseAdmin() {
 export function getResumeBucket() {
   return process.env.SUPABASE_RESUME_BUCKET?.trim() || 'resumes'
 }
+
+export function getJobAttachmentBucket() {
+  return process.env.SUPABASE_JOB_ATTACHMENT_BUCKET?.trim() || 'job-attachments'
+}
+
+export function getProjectInquiryBucket() {
+  return process.env.SUPABASE_PROJECT_INQUIRY_BUCKET?.trim() || 'project-inquiries'
+}

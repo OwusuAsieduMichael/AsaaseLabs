@@ -30,7 +30,7 @@ export default function About() {
               About AsaaseLabs
             </h2>
             <p className="text-lg text-gray-300 mb-6 leading-relaxed font-medium">
-              We are an African-based technology innovation lab that partners with businesses, 
+              We are an African-based technology innovation lab, Ghana specifically, that partners with businesses, 
               startups, and visionaries to transform groundbreaking ideas into scalable, 
               high-impact digital solutions.
             </p>

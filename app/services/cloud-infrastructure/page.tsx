@@ -1,18 +1,42 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import PageBackNav from '@/components/PageBackNav'
 
 export default function CloudInfrastructure() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const heroImages = ['/hero-big.jpg', '/hero-big2.jpg', '/hero-big3.jpg']
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length)
+    }, 8000)
+    return () => clearInterval(interval)
+  }, [])
+
   return (
     <main className="min-h-screen bg-dark">
       <Navbar />
       
-      <section className="pt-32 pb-16 bg-gradient-to-b from-dark to-dark-lighter relative overflow-hidden">
-        <div className="absolute inset-0 pattern-grid opacity-10"></div>
+      <section className="pt-32 pb-16 relative overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden">
+          {heroImages.map((image, index) => (
+            <motion.div
+              key={image}
+              initial={{ x: '100%' }}
+              animate={{ x: currentImageIndex === index ? '0%' : currentImageIndex > index ? '-100%' : '100%' }}
+              transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${image})` }}
+            />
+          ))}
+          <div className="absolute inset-0 bg-dark/80"></div>
+          <div className="absolute inset-0 pattern-grid opacity-10"></div>
+        </div>
         <div className="section-container relative z-10">
           <PageBackNav fallbackHref="/#services" fallbackLabel="Services" align="center" className="mb-8" />
           <motion.div
@@ -51,7 +75,17 @@ export default function CloudInfrastructure() {
         </div>
       </section>
 
-      <section className="section-spacing bg-dark">
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: 'url(/background5.jpg)' }}
+          />
+          <div className="absolute inset-0 bg-[#0F172A]/85" />
+        </div>
+        <div className="absolute inset-0 pattern-grid opacity-30 z-0"></div>
+
+      <section className="section-spacing relative z-10">
         <div className="section-container">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -93,7 +127,7 @@ export default function CloudInfrastructure() {
         </div>
       </section>
 
-      <section className="section-spacing bg-dark-lighter">
+      <section className="section-spacing relative z-10">
         <div className="section-container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -149,7 +183,7 @@ export default function CloudInfrastructure() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="card p-6 hover-lift"
+                className="card p-6 hover-lift border-l-4 border-purple-500 hover:border-purple-400 bg-gradient-to-br from-purple-500/10 to-transparent hover:from-purple-500/15 transition-all"
               >
                 <div className="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center mb-4">
                   <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,7 +198,7 @@ export default function CloudInfrastructure() {
         </div>
       </section>
 
-      <section id="approach" className="section-spacing bg-dark">
+      <section id="approach" className="section-spacing relative z-10">
         <div className="section-container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -244,7 +278,7 @@ export default function CloudInfrastructure() {
         </div>
       </section>
 
-      <section className="section-spacing bg-dark-lighter">
+      <section className="section-spacing relative z-10">
         <div className="section-container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -285,7 +319,7 @@ export default function CloudInfrastructure() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="card p-8"
+                className="card p-8 border-l-4 border-purple-500 hover:border-purple-400 bg-gradient-to-br from-purple-500/10 to-transparent hover:from-purple-500/15 transition-all"
               >
                 <div className="w-14 h-14 bg-purple-500/10 rounded-lg flex items-center justify-center mb-6">
                   <svg className="w-7 h-7 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -309,7 +343,7 @@ export default function CloudInfrastructure() {
         </div>
       </section>
 
-      <section className="section-spacing bg-dark">
+      <section className="section-spacing relative z-10">
         <div className="section-container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -366,7 +400,7 @@ export default function CloudInfrastructure() {
         </div>
       </section>
 
-      <section className="section-spacing bg-dark-lighter">
+      <section className="section-spacing relative z-10">
         <div className="section-container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -410,7 +444,7 @@ export default function CloudInfrastructure() {
               >
                 <Link
                   href={service.link}
-                  className="card p-6 hover-lift block group"
+                  className="card p-6 hover-lift block group border-l-4 border-purple-500 hover:border-purple-400 bg-gradient-to-br from-purple-500/10 to-transparent hover:from-purple-500/15 transition-all"
                 >
                   <h3 className="text-xl font-bold text-white mb-3 group-hover:text-purple-400 transition-colors">
                     {service.title}
@@ -429,7 +463,7 @@ export default function CloudInfrastructure() {
         </div>
       </section>
 
-      <section className="section-spacing bg-dark">
+      <section className="section-spacing relative z-10">
         <div className="section-container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -464,6 +498,8 @@ export default function CloudInfrastructure() {
           </motion.div>
         </div>
       </section>
+
+      </div>
 
       <Footer />
     </main>

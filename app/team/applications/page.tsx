@@ -10,25 +10,30 @@ import { useCallback, useEffect, useState } from 'react'
 type Row = {
   id: string
   created_at: string
-  full_name: string
+  first_name: string
+  last_name: string
   email: string
   phone: string | null
-  company: string | null
-  project_type: string | null
-  description: string | null
-  description_file_name: string | null
-  description_file_path: string | null
-  description_file_type: string | null
-  description_file_size_bytes: number | null
-  budget: string | null
-  timeline: string | null
+  position: string | null
+  location: string | null
+  experience: string | null
+  availability: string | null
+  cover_letter: string | null
+  cover_letter_file_name: string | null
+  cover_letter_storage_path: string | null
+  cover_letter_file_type: string | null
+  cover_letter_file_size_bytes: number | null
+  resume_file_name: string | null
+  resume_storage_path: string | null
+  resume_file_type: string | null
+  resume_file_size_bytes: number | null
   status: string
   source: string | null
   deleted_at: string | null
   deleted_by: string | null
 }
 
-const STATUS_OPTIONS = ['new', 'contacted', 'qualified', 'closed', 'spam'] as const
+const STATUS_OPTIONS = ['new', 'shortlisted', 'interview', 'hired', 'rejected'] as const
 
 function fileBadgeLabel(type: string | null, name: string | null) {
   const mime = (type || '').toLowerCase()
@@ -41,13 +46,15 @@ function fileBadgeLabel(type: string | null, name: string | null) {
   return 'FILE'
 }
 
-export default function TeamInquiriesPage() {
+export default function TeamApplicationsPage() {
   const { isAuthenticated, authReady } = useAuth()
   const [allowed, setAllowed] = useState<boolean | null>(null)
   const [rows, setRows] = useState<Row[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
-  const [fileBucket, setFileBucket] = useState('project-inquiries')
+  const [notes, setNotes] = useState<Record<string, string>>({})
+  const [resumeBucket, setResumeBucket] = useState('resumes')
+  const [attachmentBucket, setAttachmentBucket] = useState('job-attachments')
   const [isClearing, setIsClearing] = useState(false)
   const [showDeleted, setShowDeleted] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
@@ -68,18 +75,23 @@ export default function TeamInquiriesPage() {
       return
     }
     setAllowed(true)
-    const listRes = await fetch(`/api/staff/project-inquiries?limit=100&deleted=${showDeleted}`, {
+    const listRes = await fetch(`/api/staff/job-applications?limit=100&deleted=${showDeleted}`, {
       credentials: 'same-origin',
     })
     if (!listRes.ok) {
-      setError('Could not load inquiries.')
+      setError('Could not load job applications.')
       setRows([])
       setLoading(false)
       return
     }
-    const data = (await listRes.json()) as { rows?: Row[]; fileBucket?: string }
+    const data = (await listRes.json()) as {
+      rows?: Row[]
+      resumeBucket?: string
+      attachmentBucket?: string
+    }
     setRows(Array.isArray(data.rows) ? data.rows : [])
-    if (data.fileBucket) setFileBucket(data.fileBucket)
+    if (data.resumeBucket) setResumeBucket(data.resumeBucket)
+    if (data.attachmentBucket) setAttachmentBucket(data.attachmentBucket)
     setLoading(false)
   }, [showDeleted])
 
@@ -94,14 +106,14 @@ export default function TeamInquiriesPage() {
   }, [authReady, isAuthenticated, load])
 
   const updateStatus = async (id: string, status: string) => {
-    const r = await fetch(`/api/staff/project-inquiries/${id}`, {
+    const r = await fetch(`/api/staff/job-applications/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin',
-      body: JSON.stringify({ status }),
+      body: JSON.stringify({ status, note: notes[id] || '', notifyCandidate: true }),
     })
     if (!r.ok) {
-      setError('Could not update status.')
+      setError('Could not update application status.')
       return
     }
     setRows((prev) => prev.map((row) => (row.id === id ? { ...row, status } : row)))
@@ -126,77 +138,77 @@ export default function TeamInquiriesPage() {
   }
 
   const moveToBin = async (id: string) => {
-    const res = await fetch(`/api/staff/project-inquiries/${id}`, {
+    const r = await fetch(`/api/staff/job-applications/${id}`, {
       method: 'DELETE',
       credentials: 'same-origin',
     })
-    if (!res.ok) {
-      setError('Could not move inquiry to recycle bin.')
+    if (!r.ok) {
+      setError('Could not move application to recycle bin.')
       return
     }
-    setRows((prev) => prev.filter((r) => r.id !== id))
+    setRows((prev) => prev.filter((row) => row.id !== id))
     setError(null)
   }
 
   const restoreRow = async (id: string) => {
-    const res = await fetch(`/api/staff/project-inquiries/${id}`, {
+    const r = await fetch(`/api/staff/job-applications/${id}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin',
       body: JSON.stringify({ action: 'restore' }),
     })
-    if (!res.ok) {
-      setError('Could not restore inquiry.')
+    if (!r.ok) {
+      setError('Could not restore application.')
       return
     }
-    setRows((prev) => prev.filter((r) => r.id !== id))
+    setRows((prev) => prev.filter((row) => row.id !== id))
     setError(null)
   }
 
   const deletePermanently = async (id: string) => {
-    const res = await fetch(`/api/staff/project-inquiries/${id}?permanent=true`, {
+    const r = await fetch(`/api/staff/job-applications/${id}?permanent=true`, {
       method: 'DELETE',
       credentials: 'same-origin',
     })
-    if (!res.ok) {
-      setError('Could not permanently delete inquiry.')
+    if (!r.ok) {
+      setError('Could not permanently delete application.')
       return
     }
-    setRows((prev) => prev.filter((r) => r.id !== id))
+    setRows((prev) => prev.filter((row) => row.id !== id))
     setError(null)
   }
 
   const clearAll = async () => {
     setIsClearing(true)
     const endpoint = showDeleted
-      ? '/api/staff/project-inquiries?permanent=true'
-      : '/api/staff/project-inquiries'
-    const res = await fetch(endpoint, {
+      ? '/api/staff/job-applications?permanent=true'
+      : '/api/staff/job-applications'
+    const r = await fetch(endpoint, {
       method: 'DELETE',
       credentials: 'same-origin',
     })
     setIsClearing(false)
-    if (!res.ok) {
-      setError(showDeleted ? 'Could not empty recycle bin.' : 'Could not move inquiries to recycle bin.')
+    if (!r.ok) {
+      setError(showDeleted ? 'Could not empty recycle bin.' : 'Could not move applications to recycle bin.')
       return
     }
     setRows([])
     setError(null)
   }
 
-  const openStorageFile = async (path: string) => {
+  const openStorageFile = async (bucket: string, path: string) => {
     const fileTab = window.open('', '_blank')
     if (!fileTab) {
       setError('Popup blocked. Please allow popups for this site and try again.')
       return
     }
     fileTab.document.write('<p style="font-family: sans-serif; padding: 20px;">Opening file...</p>')
-    const res = await fetch(
-      `/api/staff/storage-link?bucket=${encodeURIComponent(fileBucket)}&path=${encodeURIComponent(path)}`,
+    const r = await fetch(
+      `/api/staff/storage-link?bucket=${encodeURIComponent(bucket)}&path=${encodeURIComponent(path)}`,
       { credentials: 'same-origin' }
     )
-    const data = (await res.json()) as { url?: string; error?: string }
-    if (!res.ok || !data.url) {
+    const data = (await r.json()) as { url?: string; error?: string }
+    if (!r.ok || !data.url) {
       fileTab.close()
       setError(data.error || 'Could not open file.')
       return
@@ -204,13 +216,13 @@ export default function TeamInquiriesPage() {
     fileTab.location.href = data.url
   }
 
-  const downloadStorageFile = async (path: string, filename: string) => {
-    const res = await fetch(
-      `/api/staff/storage-link?bucket=${encodeURIComponent(fileBucket)}&path=${encodeURIComponent(path)}&download=true&filename=${encodeURIComponent(filename)}`,
+  const downloadStorageFile = async (bucket: string, path: string, filename: string) => {
+    const r = await fetch(
+      `/api/staff/storage-link?bucket=${encodeURIComponent(bucket)}&path=${encodeURIComponent(path)}&download=true&filename=${encodeURIComponent(filename)}`,
       { credentials: 'same-origin' }
     )
-    const data = (await res.json()) as { url?: string; error?: string }
-    if (!res.ok || !data.url) {
+    const data = (await r.json()) as { url?: string; error?: string }
+    if (!r.ok || !data.url) {
       setError(data.error || 'Could not download file.')
       return
     }
@@ -226,7 +238,7 @@ export default function TeamInquiriesPage() {
     return (
       <main className="min-h-screen bg-dark">
         <Navbar />
-        <div className="section-container pt-32 pb-24 text-center text-gray-400">Loading…</div>
+        <div className="section-container pt-32 pb-24 text-center text-gray-400">Loading...</div>
         <Footer />
       </main>
     )
@@ -238,7 +250,7 @@ export default function TeamInquiriesPage() {
         <Navbar />
         <div className="section-container pt-32 pb-24 max-w-lg mx-auto text-center">
           <h1 className="text-2xl font-bold text-white mb-3">Restricted</h1>
-          <p className="text-gray-400 mb-6">Sign in with a team account to view project inquiries.</p>
+          <p className="text-gray-400 mb-6">Sign in with a team account to view job applications.</p>
           <a href="/" className="text-primary font-semibold hover:underline">
             Back to home
           </a>
@@ -256,16 +268,16 @@ export default function TeamInquiriesPage() {
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">
-              {showDeleted ? 'Project inquiries — Recycle Bin' : 'Project inquiries'}
+              {showDeleted ? 'Job applications — Recycle Bin' : 'Job applications'}
             </h1>
             <p className="text-gray-400 text-sm">
               {showDeleted
-                ? 'Soft-deleted inquiries are kept here until permanently removed.'
-                : 'Submissions from Get Started. Email notifications are separate; this is your in-app log.'}
+                ? 'Soft-deleted applications are held here until permanently removed.'
+                : 'Manage applicant stages. Changing status sends a candidate update email.'}
             </p>
           </div>
-          <a href="/team/applications" className="text-sm font-semibold text-primary hover:underline">
-            View job applications
+          <a href="/team/inquiries" className="text-sm font-semibold text-primary hover:underline">
+            View project inquiries
           </a>
           <button
             type="button"
@@ -278,10 +290,10 @@ export default function TeamInquiriesPage() {
             type="button"
             onClick={() =>
               openConfirm(
-                showDeleted ? 'Empty recycle bin?' : 'Move all inquiries to recycle bin?',
+                showDeleted ? 'Empty recycle bin?' : 'Move all applications to recycle bin?',
                 showDeleted
-                  ? 'This permanently deletes all inquiries currently in the recycle bin.'
-                  : 'All active inquiries will be moved to recycle bin. You can still restore them later.',
+                  ? 'This permanently deletes all applications currently in the recycle bin.'
+                  : 'All active applications will be moved to recycle bin. You can restore them later.',
                 showDeleted ? 'Empty bin' : 'Move all',
                 clearAll
               )
@@ -304,13 +316,13 @@ export default function TeamInquiriesPage() {
             <thead>
               <tr className="border-b border-gray-800 text-gray-400">
                 <th className="px-4 py-3 font-semibold">Date</th>
-                <th className="px-4 py-3 font-semibold">Name</th>
-                <th className="px-4 py-3 font-semibold">Email</th>
-                <th className="px-4 py-3 font-semibold">Type</th>
-                <th className="px-4 py-3 font-semibold">Budget</th>
+                <th className="px-4 py-3 font-semibold">Applicant</th>
+                <th className="px-4 py-3 font-semibold">Position</th>
+                <th className="px-4 py-3 font-semibold">Experience</th>
+                <th className="px-4 py-3 font-semibold">Resume</th>
+                <th className="px-4 py-3 font-semibold">Cover Letter</th>
                 <th className="px-4 py-3 font-semibold">Status</th>
-                <th className="px-4 py-3 font-semibold">Description</th>
-                <th className="px-4 py-3 font-semibold">Description File</th>
+                <th className="px-4 py-3 font-semibold">Update Note</th>
                 <th className="px-4 py-3 font-semibold">Actions</th>
               </tr>
             </thead>
@@ -320,14 +332,100 @@ export default function TeamInquiriesPage() {
                   <td className="px-4 py-3 whitespace-nowrap text-xs text-gray-500">
                     {new Date(row.created_at).toLocaleString()}
                   </td>
-                  <td className="px-4 py-3 font-medium text-white">{row.full_name}</td>
-                  <td className="px-4 py-3">
-                    <a href={`mailto:${row.email}`} className="text-primary hover:underline">
+                  <td className="px-4 py-3 min-w-[220px]">
+                    <p className="font-medium text-white">{`${row.first_name ?? ''} ${row.last_name ?? ''}`.trim()}</p>
+                    <a href={`mailto:${row.email}`} className="text-xs text-primary hover:underline">
                       {row.email}
                     </a>
+                    {row.phone && <p className="text-xs text-gray-500 mt-1">{row.phone}</p>}
                   </td>
-                  <td className="px-4 py-3 max-w-[140px] truncate">{row.project_type ?? '—'}</td>
-                  <td className="px-4 py-3 max-w-[120px] truncate">{row.budget ?? '—'}</td>
+                  <td className="px-4 py-3 max-w-[180px] truncate">{row.position ?? '—'}</td>
+                  <td className="px-4 py-3 max-w-[120px] truncate">{row.experience ?? '—'}</td>
+                  <td className="px-4 py-3 max-w-[220px] text-xs">
+                    {row.resume_file_name ? (
+                      <div className="space-y-1">
+                        {row.resume_storage_path ? (
+                          <button
+                            type="button"
+                            onClick={() => openStorageFile(resumeBucket, row.resume_storage_path!)}
+                            className="text-primary hover:underline truncate max-w-[200px] text-left"
+                            title={row.resume_file_name}
+                          >
+                            {row.resume_file_name}
+                          </button>
+                        ) : (
+                          <span className="truncate max-w-[200px] block" title={row.resume_file_name}>
+                            {row.resume_file_name}
+                          </span>
+                        )}
+                        <p className="text-gray-500">
+                          {row.resume_file_type || 'Unknown type'}
+                          {row.resume_file_size_bytes ? ` • ${Math.round(row.resume_file_size_bytes / 1024)} KB` : ''}
+                        </p>
+                        <span className="inline-flex items-center rounded-md border border-primary/40 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+                          {fileBadgeLabel(row.resume_file_type, row.resume_file_name)}
+                        </span>
+                        {row.resume_storage_path && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              downloadStorageFile(
+                                resumeBucket,
+                                row.resume_storage_path!,
+                                row.resume_file_name || 'resume'
+                              )
+                            }
+                            className="inline-flex items-center rounded-md border border-gray-600 px-2 py-0.5 text-[10px] font-semibold text-gray-300 hover:border-primary hover:text-primary transition-colors"
+                          >
+                            Download
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
+                  <td className="px-4 py-3 max-w-[260px] text-xs">
+                    <div className="space-y-1">
+                      <p className="truncate" title={row.cover_letter ?? ''}>
+                        {row.cover_letter || '—'}
+                      </p>
+                      {row.cover_letter_file_name && row.cover_letter_storage_path && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => openStorageFile(attachmentBucket, row.cover_letter_storage_path!)}
+                            className="text-primary hover:underline truncate max-w-[240px] text-left"
+                            title={row.cover_letter_file_name}
+                          >
+                            {row.cover_letter_file_name}
+                          </button>
+                          <p className="text-gray-500">
+                            {row.cover_letter_file_type || 'Unknown type'}
+                            {row.cover_letter_file_size_bytes
+                              ? ` • ${Math.round(row.cover_letter_file_size_bytes / 1024)} KB`
+                              : ''}
+                          </p>
+                          <span className="inline-flex items-center rounded-md border border-primary/40 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+                            {fileBadgeLabel(row.cover_letter_file_type, row.cover_letter_file_name)}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              downloadStorageFile(
+                                attachmentBucket,
+                                row.cover_letter_storage_path!,
+                                row.cover_letter_file_name || 'cover-letter'
+                              )
+                            }
+                            className="inline-flex items-center rounded-md border border-gray-600 px-2 py-0.5 text-[10px] font-semibold text-gray-300 hover:border-primary hover:text-primary transition-colors"
+                          >
+                            Download
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-4 py-3">
                     {showDeleted ? (
                       <span className="text-xs text-gray-400">{row.status}</span>
@@ -345,40 +443,16 @@ export default function TeamInquiriesPage() {
                       </select>
                     )}
                   </td>
-                  <td className="px-4 py-3 max-w-xs truncate text-xs" title={row.description ?? ''}>
-                    {row.description ?? '—'}
-                  </td>
-                  <td className="px-4 py-3 max-w-[220px] text-xs">
-                    {row.description_file_name && row.description_file_path ? (
-                      <div className="space-y-1">
-                        <button
-                          type="button"
-                          onClick={() => openStorageFile(row.description_file_path!)}
-                          className="text-primary hover:underline truncate max-w-[200px] text-left"
-                          title={row.description_file_name}
-                        >
-                          {row.description_file_name}
-                        </button>
-                        <p className="text-gray-500">
-                          {row.description_file_type || 'Unknown type'}
-                          {row.description_file_size_bytes ? ` • ${Math.round(row.description_file_size_bytes / 1024)} KB` : ''}
-                        </p>
-                        <span className="inline-flex items-center rounded-md border border-primary/40 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
-                          {fileBadgeLabel(row.description_file_type, row.description_file_name)}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            downloadStorageFile(row.description_file_path!, row.description_file_name!)
-                          }
-                          className="inline-flex items-center rounded-md border border-gray-600 px-2 py-0.5 text-[10px] font-semibold text-gray-300 hover:border-primary hover:text-primary transition-colors"
-                        >
-                          Download
-                        </button>
-                      </div>
-                    ) : (
-                      '—'
-                    )}
+                  <td className="px-4 py-3 min-w-[220px]">
+                    <textarea
+                      rows={2}
+                      value={notes[row.id] ?? ''}
+                      onChange={(e) =>
+                        setNotes((prev) => ({ ...prev, [row.id]: e.target.value.slice(0, 5000) }))
+                      }
+                      className="w-full rounded-lg border border-gray-700 bg-dark-lighter px-2 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="Optional note included in applicant update email"
+                    />
                   </td>
                   <td className="px-4 py-3">
                     {showDeleted ? (
@@ -387,8 +461,8 @@ export default function TeamInquiriesPage() {
                           type="button"
                           onClick={() =>
                             openConfirm(
-                              'Restore inquiry?',
-                              'This inquiry will return to the active inbox.',
+                              'Restore application?',
+                              'This application will return to the active inbox.',
                               'Restore',
                               async () => restoreRow(row.id)
                             )
@@ -402,7 +476,7 @@ export default function TeamInquiriesPage() {
                           onClick={() =>
                             openConfirm(
                               'Delete permanently?',
-                              'This inquiry and any attached files will be permanently removed.',
+                              'This application and all attached files will be permanently removed.',
                               'Delete permanently',
                               async () => deletePermanently(row.id)
                             )
@@ -417,8 +491,8 @@ export default function TeamInquiriesPage() {
                         type="button"
                         onClick={() =>
                           openConfirm(
-                            'Move inquiry to recycle bin?',
-                            'This inquiry will be removed from active notifications and can be restored later.',
+                            'Move application to recycle bin?',
+                            'This application will be removed from active notifications and can be restored later.',
                             'Move to bin',
                             async () => moveToBin(row.id)
                           )
@@ -434,7 +508,7 @@ export default function TeamInquiriesPage() {
             </tbody>
           </table>
           {rows.length === 0 && (
-            <p className="px-4 py-8 text-center text-gray-500 text-sm">No inquiries yet.</p>
+            <p className="px-4 py-8 text-center text-gray-500 text-sm">No applications yet.</p>
           )}
         </div>
       </div>

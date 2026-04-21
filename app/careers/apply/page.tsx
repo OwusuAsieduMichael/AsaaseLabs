@@ -1,31 +1,37 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import PageBackNav from '@/components/PageBackNav'
+import ConsentModal from '@/components/ConsentModal'
 
 export default function ApplyPage() {
+  const resultSectionRef = useRef<HTMLDivElement | null>(null)
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
     position: '',
+    positionOther: '',
     location: '',
     linkedIn: '',
     portfolio: '',
     experience: '',
     availability: '',
     coverLetter: '',
+    coverLetterFile: null as File | null,
     resume: null as File | null,
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [hasAcceptedLegal, setHasAcceptedLegal] = useState(false)
+  const [showConsentModal, setShowConsentModal] = useState(false)
 
   const positions = [
     'Full-Stack Developer',
@@ -45,7 +51,11 @@ export default function ApplyPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(name === 'position' && value !== 'Other' ? { positionOther: '' } : {}),
+    }))
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,24 +64,62 @@ export default function ApplyPage() {
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleCoverLetterFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null
+    setFormData((prev) => ({ ...prev, coverLetterFile: file }))
+  }
+
+  const resetSubmissionForm = () => {
+    setIsSubmitted(false)
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      position: '',
+      positionOther: '',
+      location: '',
+      linkedIn: '',
+      portfolio: '',
+      experience: '',
+      availability: '',
+      coverLetter: '',
+      coverLetterFile: null,
+      resume: null,
+    })
+    setHasAcceptedLegal(false)
+    setSubmitError(null)
+  }
+
+  const submitApplication = async () => {
     setSubmitError(null)
     setIsSubmitting(true)
 
     try {
+      if (!formData.coverLetter.trim() && !formData.coverLetterFile) {
+        setSubmitError('Please provide a cover letter text or upload a cover letter file.')
+        setIsSubmitting(false)
+        return
+      }
       const fd = new FormData()
       fd.set('firstName', formData.firstName)
       fd.set('lastName', formData.lastName)
       fd.set('email', formData.email)
       fd.set('phone', formData.phone)
       fd.set('position', formData.position)
+      if (formData.position === 'Other' && formData.positionOther.trim()) {
+        fd.set('position', `Other: ${formData.positionOther.trim()}`)
+      }
       fd.set('location', formData.location)
       fd.set('linkedIn', formData.linkedIn)
       fd.set('portfolio', formData.portfolio)
       fd.set('experience', formData.experience)
       fd.set('availability', formData.availability)
       fd.set('coverLetter', formData.coverLetter)
+      if (formData.coverLetterFile) {
+        fd.set('coverLetterFile', formData.coverLetterFile)
+      }
+      fd.set('termsAccepted', 'true')
       if (formData.resume) {
         fd.set('resume', formData.resume)
       }
@@ -87,23 +135,6 @@ export default function ApplyPage() {
 
       setIsSubmitted(true)
       setIsSubmitting(false)
-      setTimeout(() => {
-        setIsSubmitted(false)
-        setFormData({
-          firstName: '',
-          lastName: '',
-          email: '',
-          phone: '',
-          position: '',
-          location: '',
-          linkedIn: '',
-          portfolio: '',
-          experience: '',
-          availability: '',
-          coverLetter: '',
-          resume: null,
-        })
-      }, 5000)
     } catch (error) {
       console.error('Error submitting application:', error)
       setSubmitError('Network error. Check your connection and try again.')
@@ -111,10 +142,27 @@ export default function ApplyPage() {
     }
   }
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!hasAcceptedLegal) {
+      setShowConsentModal(true)
+      return
+    }
+    await submitApplication()
+  }
+
+  useEffect(() => {
+    if (!isSubmitted) return
+    const t = window.setTimeout(() => {
+      resultSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 60)
+    return () => window.clearTimeout(t)
+  }, [isSubmitted])
+
   return (
-    <main className="min-h-screen bg-dark">
+    <main className="min-h-screen bg-dark flex flex-col">
       <Navbar />
-      
+      <div className="flex-1">
       <section className="pt-32 pb-16 bg-gradient-to-b from-dark to-dark-lighter relative overflow-hidden">
         <div className="absolute inset-0 pattern-grid opacity-10"></div>
         <div className="section-container relative z-10">
@@ -137,14 +185,14 @@ export default function ApplyPage() {
         </div>
       </section>
 
-      <section className="section-spacing bg-dark">
+      <section className="py-20 md:py-24 bg-dark">
         <div className="section-container">
-          <div className="max-w-3xl mx-auto">
+          <div ref={resultSectionRef} className="max-w-3xl mx-auto">
             {isSubmitted ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="card p-12 text-center"
+                className="card p-12 text-center border-l-4 border-primary bg-gradient-to-br from-primary/10 to-transparent"
               >
                 <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
                   <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,6 +206,13 @@ export default function ApplyPage() {
                 <p className="text-gray-400 text-sm">
                   Our team will review your application and respond within 5 business days.
                 </p>
+                <button
+                  type="button"
+                  onClick={resetSubmissionForm}
+                  className="mt-6 inline-flex items-center rounded-lg border border-primary/40 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary hover:bg-primary/20 transition-colors"
+                >
+                  Start New Submission
+                </button>
               </motion.div>
             ) : (
               <motion.div
@@ -267,6 +322,23 @@ export default function ApplyPage() {
                           ))}
                         </select>
                       </div>
+                      {formData.position === 'Other' && (
+                        <div>
+                          <label htmlFor="positionOther" className="block text-sm font-semibold text-gray-300 mb-2">
+                            Please specify *
+                          </label>
+                          <input
+                            type="text"
+                            id="positionOther"
+                            name="positionOther"
+                            value={formData.positionOther}
+                            onChange={handleChange}
+                            required={formData.position === 'Other'}
+                            className="w-full px-4 py-3 bg-dark-lighter border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                            placeholder="Enter the role you're applying for"
+                          />
+                        </div>
+                      )}
                       <div>
                         <label htmlFor="location" className="block text-sm font-semibold text-gray-300 mb-2">
                           Preferred Location *
@@ -402,14 +474,14 @@ export default function ApplyPage() {
                     </h3>
                     <div>
                       <label htmlFor="coverLetter" className="block text-sm font-semibold text-gray-300 mb-2">
-                        Tell us why you're a great fit *
+                        Tell us why you're a great fit
                       </label>
                       <textarea
                         id="coverLetter"
                         name="coverLetter"
                         value={formData.coverLetter}
                         onChange={handleChange}
-                        required
+                        required={!formData.coverLetterFile}
                         rows={6}
                         className="w-full px-4 py-3 bg-dark-lighter border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
                         placeholder="Share your motivation, relevant experience, and what makes you a great fit for this role..."
@@ -417,6 +489,26 @@ export default function ApplyPage() {
                       <p className="text-xs text-gray-500 mt-2">
                         Minimum 100 characters
                       </p>
+                      <div className="mt-4">
+                        <label htmlFor="coverLetterFile" className="block text-sm font-semibold text-gray-300 mb-2">
+                          Or upload cover letter file
+                        </label>
+                        <input
+                          type="file"
+                          id="coverLetterFile"
+                          name="coverLetterFile"
+                          onChange={handleCoverLetterFileChange}
+                          accept=".pdf,.doc,.docx,.txt,.md"
+                          required={!formData.coverLetter.trim()}
+                          className="w-full px-4 py-3 bg-dark-lighter border border-gray-700 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-light file:cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                        />
+                        <p className="text-xs text-gray-500 mt-2">
+                          Accepted formats: PDF, DOC, DOCX, TXT, MD (Max 10MB)
+                        </p>
+                        {formData.coverLetterFile && (
+                          <p className="text-sm text-primary mt-2">Selected: {formData.coverLetterFile.name}</p>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -468,12 +560,37 @@ export default function ApplyPage() {
                       Cancel
                     </Link>
                   </div>
+                  <p className="text-center text-sm text-gray-400 -mt-2">
+                    By submitting this application, you agree to our{' '}
+                    <a href="/terms-of-service" className="text-primary hover:text-primary-light underline">
+                      Terms of Service
+                    </a>{' '}
+                    and{' '}
+                    <a href="/privacy-policy" className="text-primary hover:text-primary-light underline">
+                      Privacy Policy
+                    </a>
+                    .
+                  </p>
                 </form>
               </motion.div>
             )}
           </div>
         </div>
       </section>
+      </div>
+
+      <ConsentModal
+        isOpen={showConsentModal}
+        title="Review Terms Before Application"
+        description="Before we process your role application, you need to review and accept our legal terms."
+        accepted={hasAcceptedLegal}
+        onAcceptedChange={setHasAcceptedLegal}
+        onClose={() => setShowConsentModal(false)}
+        onConfirm={async () => {
+          setShowConsentModal(false)
+          await submitApplication()
+        }}
+      />
 
       <Footer />
     </main>

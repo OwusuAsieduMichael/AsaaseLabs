@@ -1,12 +1,23 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import PageBackNav from '@/components/PageBackNav'
 
 export default function Careers() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const heroImages = ['/hero-big.jpg', '/hero-big2.jpg', '/hero-big3.jpg']
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length)
+    }, 8000)
+    return () => clearInterval(interval)
+  }, [])
+
   const openPositions = [
     {
       title: 'Full-Stack Developer',
@@ -143,8 +154,21 @@ export default function Careers() {
     <main className="min-h-screen bg-dark">
       <Navbar />
       
-      <section className="pt-32 pb-16 bg-gradient-to-b from-dark to-dark-lighter relative overflow-hidden">
-        <div className="absolute inset-0 pattern-grid opacity-10"></div>
+      <section className="pt-32 pb-16 relative overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden">
+          {heroImages.map((image, index) => (
+            <motion.div
+              key={image}
+              initial={{ x: '100%' }}
+              animate={{ x: currentImageIndex === index ? '0%' : currentImageIndex > index ? '-100%' : '100%' }}
+              transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${image})` }}
+            />
+          ))}
+          <div className="absolute inset-0 bg-dark/80"></div>
+          <div className="absolute inset-0 pattern-grid opacity-10"></div>
+        </div>
         <div className="section-container relative z-10">
           <PageBackNav fallbackHref="/" fallbackLabel="Home" align="center" className="mb-8" />
           <motion.div
@@ -166,7 +190,17 @@ export default function Careers() {
         </div>
       </section>
 
-      <section className="section-spacing bg-dark">
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: 'url(/background5.jpg)' }}
+          />
+          <div className="absolute inset-0 bg-[#0F172A]/85" />
+        </div>
+        <div className="absolute inset-0 pattern-grid opacity-30 z-0"></div>
+
+      <section className="section-spacing relative z-10">
         <div className="section-container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -191,7 +225,7 @@ export default function Careers() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="card p-6 hover-lift"
+                className="card p-6 hover-lift border-l-4 border-primary hover:border-primary-light bg-gradient-to-br from-primary/10 to-transparent hover:from-primary/15 transition-all"
               >
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                   <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -206,7 +240,7 @@ export default function Careers() {
         </div>
       </section>
 
-      <section className="section-spacing bg-dark-lighter">
+      <section className="section-spacing relative z-10">
         <div className="section-container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -231,7 +265,7 @@ export default function Careers() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.05 }}
-                className="card p-6 hover-lift"
+                className="card p-6 hover-lift border-l-4 border-primary hover:border-primary-light bg-gradient-to-br from-primary/10 to-transparent hover:from-primary/15 transition-all"
               >
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
                   <div>
@@ -290,7 +324,7 @@ export default function Careers() {
         </div>
       </section>
 
-      <section className="section-spacing bg-dark">
+      <section className="section-spacing relative z-10">
         <div className="section-container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -325,6 +359,8 @@ export default function Careers() {
           </motion.div>
         </div>
       </section>
+
+      </div>
 
       <Footer />
     </main>

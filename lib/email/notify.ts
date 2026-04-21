@@ -55,43 +55,32 @@ function parseRecipients(raw: string) {
 
 export type NotifyResult = { sent: true; id?: string } | { sent: false; reason: string }
 
-/**
- * Sends a plain HTML email to the team inbox via Resend.
- * If env is not configured, logs and returns without throwing (forms still succeed).
- */
-export async function sendTeamEmail(params: {
+async function sendEmail(params: {
+  to: string[]
   subject: string
   html: string
-  /** When set, “Reply” in the mail client goes to the submitter. */
   replyTo?: string
 }): Promise<NotifyResult> {
   const apiKey = process.env.RESEND_API_KEY?.trim()
   const from = process.env.EMAIL_FROM?.trim() || 'AsaaseLabs <onboarding@resend.dev>'
-  const toRaw = process.env.NOTIFY_EMAIL?.trim()
-
   if (!apiKey) {
     console.warn('[email] RESEND_API_KEY is not set; skipping notification email.')
     return { sent: false, reason: 'missing_api_key' }
   }
-  if (!toRaw) {
-    console.warn('[email] NOTIFY_EMAIL is not set; skipping notification email.')
+  if (!params.to.length) {
     return { sent: false, reason: 'missing_recipient' }
-  }
-
-  const to = parseRecipients(toRaw)
-  if (to.length === 0) {
-    console.warn('[email] NOTIFY_EMAIL has no valid addresses; skipping.')
-    return { sent: false, reason: 'invalid_recipients' }
   }
 
   try {
     const resend = new Resend(apiKey)
     const { data, error } = await resend.emails.send({
       from,
-      to,
+      to: params.to,
       subject: params.subject,
       html: params.html,
-      ...(params.replyTo && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(params.replyTo) ? { replyTo: params.replyTo } : {}),
+      ...(params.replyTo && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(params.replyTo)
+        ? { replyTo: params.replyTo }
+        : {}),
     })
     if (error) {
       console.error('[email] Resend API error:', error)
@@ -104,6 +93,49 @@ export async function sendTeamEmail(params: {
   }
 }
 
+/**
+ * Sends a plain HTML email to the team inbox via Resend.
+ * If env is not configured, logs and returns without throwing (forms still succeed).
+ */
+export async function sendTeamEmail(params: {
+  subject: string
+  html: string
+  /** When set, “Reply” in the mail client goes to the submitter. */
+  replyTo?: string
+}): Promise<NotifyResult> {
+  const toRaw = process.env.NOTIFY_EMAIL?.trim()
+
+  if (!toRaw) {
+    console.warn('[email] NOTIFY_EMAIL is not set; skipping notification email.')
+    return { sent: false, reason: 'missing_recipient' }
+  }
+
+  const to = parseRecipients(toRaw)
+  if (to.length === 0) {
+    console.warn('[email] NOTIFY_EMAIL has no valid addresses; skipping.')
+    return { sent: false, reason: 'invalid_recipients' }
+  }
+
+  return sendEmail({
+    to,
+    subject: params.subject,
+    html: params.html,
+    replyTo: params.replyTo,
+  })
+}
+
+export async function sendApplicantEmail(params: {
+  to: string
+  subject: string
+  html: string
+}): Promise<NotifyResult> {
+  const target = params.to.trim()
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(target)) {
+    return { sent: false, reason: 'invalid_recipients' }
+  }
+  return sendEmail({ to: [target], subject: params.subject, html: params.html })
+}
+
 export function buildProjectInquiryEmail(payload: {
   fullName: string
   email: string
@@ -111,6 +143,7 @@ export function buildProjectInquiryEmail(payload: {
   company: string
   projectType: string
   description: string
+  descriptionFileName?: string
   budget: string
   timeline: string
 }) {
@@ -124,6 +157,7 @@ export function buildProjectInquiryEmail(payload: {
     ['Budget', displayBudgetRange(payload.budget)],
     ['Timeline', displayTimeline(payload.timeline)],
     ['Description', payload.description],
+    ['Project description file', payload.descriptionFileName ?? ''],
   ]
     .filter(([, v]) => v.trim().length > 0)
     .map(
@@ -157,6 +191,8 @@ export function buildJobApplicationEmail(payload: {
   availability: string
   coverLetterPreview: string
   resumeFileName: string
+  resumeFileType?: string
+  coverLetterFileName?: string
 }) {
   const e = escapeHtml
   const rows = [
@@ -170,7 +206,9 @@ export function buildJobApplicationEmail(payload: {
     ['Experience', payload.experience],
     ['Availability', payload.availability],
     ['Resume file', payload.resumeFileName],
+    ['Resume type', payload.resumeFileType ?? ''],
     ['Cover letter (preview)', payload.coverLetterPreview],
+    ['Cover letter file', payload.coverLetterFileName ?? ''],
   ]
     .filter(([, v]) => v.trim().length > 0)
     .map(
@@ -190,6 +228,76 @@ export function buildJobApplicationEmail(payload: {
 
   return {
     subject: `[AsaaseLabs] Job application — ${payload.position} (${payload.firstName} ${payload.lastName})`,
+    html,
+  }
+}
+
+export function buildApplicationReceivedEmail(payload: {
+  firstName: string
+  position: string
+}) {
+  const e = escapeHtml
+  const firstName = payload.firstName.trim() || 'there'
+  const position = payload.position.trim()
+  const html = `
+<!DOCTYPE html>
+<html><body style="font-family:system-ui,sans-serif;line-height:1.6;color:#111827;">
+  <h2 style="margin:0 0 16px;">Application received</h2>
+  <p style="margin:0 0 12px;">Hi ${e(firstName)},</p>
+  <p style="margin:0 0 12px;">
+    Thanks for applying to AsaaseLabs${position ? ` for the <strong>${e(position)}</strong> role` : ''}. We have received your application and our team will review it.
+  </p>
+  <p style="margin:0 0 12px;">If your profile matches the role requirements, we will contact you with next steps.</p>
+  <p style="margin:0;">Regards,<br/>AsaaseLabs Recruitment Team</p>
+</body></html>`
+  return {
+    subject: '[AsaaseLabs] We received your application',
+    html,
+  }
+}
+
+type ApplicationStatus = 'new' | 'shortlisted' | 'interview' | 'hired' | 'rejected' | 'reviewing'
+
+function statusLabel(status: ApplicationStatus) {
+  const labels: Record<ApplicationStatus, string> = {
+    new: 'new',
+    reviewing: 'under review',
+    shortlisted: 'shortlisted',
+    interview: 'interview stage',
+    hired: 'selected',
+    rejected: 'not selected',
+  }
+  return labels[status]
+}
+
+export function buildApplicationStatusEmail(payload: {
+  firstName: string
+  position: string
+  status: ApplicationStatus
+  note?: string
+}) {
+  const e = escapeHtml
+  const firstName = payload.firstName.trim() || 'there'
+  const positionText = payload.position.trim()
+  const statusText = statusLabel(payload.status)
+  const note = payload.note?.trim()
+  const html = `
+<!DOCTYPE html>
+<html><body style="font-family:system-ui,sans-serif;line-height:1.6;color:#111827;">
+  <h2 style="margin:0 0 16px;">Application status update</h2>
+  <p style="margin:0 0 12px;">Hi ${e(firstName)},</p>
+  <p style="margin:0 0 12px;">
+    Your application${positionText ? ` for the <strong>${e(positionText)}</strong> role` : ''} is now <strong>${e(statusText)}</strong>.
+  </p>
+  ${
+    note
+      ? `<p style="margin:0 0 12px;white-space:pre-wrap;">${e(note)}</p>`
+      : '<p style="margin:0 0 12px;">Thank you for your interest in joining AsaaseLabs.</p>'
+  }
+  <p style="margin:0;">Regards,<br/>AsaaseLabs Recruitment Team</p>
+</body></html>`
+  return {
+    subject: `[AsaaseLabs] Application update${positionText ? ` — ${positionText}` : ''}`,
     html,
   }
 }

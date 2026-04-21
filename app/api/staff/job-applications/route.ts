@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server'
-import { createSupabaseAdmin, getProjectInquiryBucket } from '@/lib/supabase/admin'
+import {
+  createSupabaseAdmin,
+  getJobAttachmentBucket,
+  getResumeBucket,
+} from '@/lib/supabase/admin'
 import { createSupabaseRouteHandlerClient } from '@/lib/supabase/route-handler'
 import { isStaffEmail } from '@/lib/staff'
 
@@ -34,25 +38,25 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const limitRaw = searchParams.get('limit')
   const deleted = searchParams.get('deleted') === 'true'
-  const limit = Math.min(
-    MAX_LIMIT,
-    Math.max(1, limitRaw ? parseInt(limitRaw, 10) || 50 : 50)
-  )
+  const limit = Math.min(MAX_LIMIT, Math.max(1, limitRaw ? parseInt(limitRaw, 10) || 50 : 50))
 
   const baseSelect =
-    'id, created_at, full_name, email, phone, company, project_type, description, description_file_name, description_file_path, description_file_type, description_file_size_bytes, budget, timeline, status, source, deleted_at, deleted_by'
-
+    'id, created_at, first_name, last_name, email, phone, position, location, linkedin_url, portfolio_url, experience, availability, cover_letter, cover_letter_file_name, cover_letter_storage_path, cover_letter_file_type, cover_letter_file_size_bytes, resume_file_name, resume_storage_path, resume_file_type, resume_file_size_bytes, status, source, deleted_at, deleted_by'
   const query = deleted
-    ? admin.from('project_inquiries').select(baseSelect).not('deleted_at', 'is', null).order('deleted_at', { ascending: false }).limit(limit)
-    : admin.from('project_inquiries').select(baseSelect).is('deleted_at', null).order('created_at', { ascending: false }).limit(limit)
-
+    ? admin.from('job_applications').select(baseSelect).not('deleted_at', 'is', null).order('deleted_at', { ascending: false }).limit(limit)
+    : admin.from('job_applications').select(baseSelect).is('deleted_at', null).order('created_at', { ascending: false }).limit(limit)
   const { data: rows, error } = await query
+
   if (error) {
-    console.error('staff project_inquiries list:', error)
-    return NextResponse.json({ error: 'Could not load inquiries' }, { status: 500 })
+    console.error('staff job_applications list:', error)
+    return NextResponse.json({ error: 'Could not load applications' }, { status: 500 })
   }
 
-  return NextResponse.json({ rows: rows ?? [], fileBucket: getProjectInquiryBucket() })
+  return NextResponse.json({
+    rows: rows ?? [],
+    resumeBucket: getResumeBucket(),
+    attachmentBucket: getJobAttachmentBucket(),
+  })
 }
 
 export async function DELETE(request: Request) {
@@ -73,32 +77,38 @@ export async function DELETE(request: Request) {
 
   if (!permanent) {
     const { data: softRows, error: softError } = await admin
-      .from('project_inquiries')
+      .from('job_applications')
       .update({ deleted_at: new Date().toISOString(), deleted_by: user.email })
       .is('deleted_at', null)
       .select('id')
     if (softError) {
-      console.error('staff project_inquiries clear active:', softError)
-      return NextResponse.json({ error: 'Could not clear inquiries' }, { status: 500 })
+      console.error('staff job_applications clear active:', softError)
+      return NextResponse.json({ error: 'Could not clear applications' }, { status: 500 })
     }
     return NextResponse.json({ success: true, mode: 'soft', affectedCount: softRows?.length ?? 0 })
   }
 
   const { data: deletedRows, error } = await admin
-    .from('project_inquiries')
+    .from('job_applications')
     .delete()
     .not('deleted_at', 'is', null)
-    .select('id, description_file_path')
+    .select('id, resume_storage_path, cover_letter_storage_path')
   if (error) {
-    console.error('staff project_inquiries clear trash:', error)
+    console.error('staff job_applications clear trash:', error)
     return NextResponse.json({ error: 'Could not clear trash' }, { status: 500 })
   }
 
-  const filePaths = (deletedRows ?? [])
-    .map((r) => r.description_file_path)
+  const resumePaths = (deletedRows ?? [])
+    .map((r) => r.resume_storage_path)
     .filter((v): v is string => typeof v === 'string' && v.length > 0)
-  if (filePaths.length > 0) {
-    await admin.storage.from(getProjectInquiryBucket()).remove(filePaths)
+  if (resumePaths.length > 0) {
+    await admin.storage.from(getResumeBucket()).remove(resumePaths)
+  }
+  const coverLetterPaths = (deletedRows ?? [])
+    .map((r) => r.cover_letter_storage_path)
+    .filter((v): v is string => typeof v === 'string' && v.length > 0)
+  if (coverLetterPaths.length > 0) {
+    await admin.storage.from(getJobAttachmentBucket()).remove(coverLetterPaths)
   }
 
   return NextResponse.json({ success: true, mode: 'permanent', affectedCount: deletedRows?.length ?? 0 })
