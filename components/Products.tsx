@@ -63,7 +63,7 @@ export default function Products() {
       {/* Background Image with Opacity */}
       <div className="absolute inset-0 z-0">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-[length:150%_auto] bg-top bg-no-repeat sm:bg-cover sm:bg-center"
           style={{ backgroundImage: 'url(/background6.jpg)' }}
         />
         <div className="absolute inset-0 bg-[#0F172A]/85" />
@@ -79,21 +79,21 @@ export default function Products() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16 md:mb-20"
+          className="text-center mb-12 sm:mb-14 md:mb-20"
         >
           <div className="inline-flex items-center mb-4 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full backdrop-blur-sm">
             <span className="text-primary text-sm font-bold tracking-wide">INNOVATION PIPELINE</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight leading-[1.1]">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight leading-[1.1] text-balance px-1">
             Our Innovations
           </h2>
-          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto text-balance font-medium">
+          <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto text-balance font-medium px-1">
             Next-generation products powered by AI and cutting-edge technology
           </p>
         </motion.div>
 
         {/* Products Grid */}
-        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+        <div className="scroll-rail md:grid md:grid-cols-2 md:gap-8 md:overflow-visible md:pb-0 md:snap-none">
           {products.map((product, index) => (
             <motion.div
               key={product.name}
@@ -101,26 +101,26 @@ export default function Products() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="relative group"
+              className="relative group scroll-rail-item"
             >
               {/* Gradient glow effect */}
               <div className={`absolute inset-0 bg-gradient-to-r ${product.gradient} opacity-0 group-hover:opacity-10 blur-xl transition-opacity duration-500 rounded-2xl`}></div>
               
-              <div className="relative card p-8 md:p-10 hover-lift border-l-4 border-purple-500 hover:border-purple-400 bg-gradient-to-br from-purple-500/10 to-transparent hover:from-purple-500/15 transition-all">
-                <div className="flex items-start justify-between mb-6">
-                  <div className={`text-primary bg-gradient-to-r ${product.gradient} bg-clip-text text-transparent`}>
+              <div className="relative card scroll-rail-card min-w-0 p-3 sm:p-4 md:p-10 hover-lift border-l-4 border-purple-500 hover:border-purple-400 bg-gradient-to-br from-purple-500/10 to-transparent hover:from-purple-500/15 transition-all">
+                <div className="flex flex-wrap items-start justify-between gap-3 mb-6 min-w-0">
+                  <div className={`shrink-0 text-primary bg-gradient-to-r ${product.gradient} bg-clip-text text-transparent [&>svg]:h-10 [&>svg]:w-10 sm:[&>svg]:h-11 sm:[&>svg]:w-11 md:[&>svg]:h-12 md:[&>svg]:w-12`}>
                     {product.icon}
                   </div>
-                  <span className="px-3 py-1.5 bg-blue-500/20 text-blue-300 text-xs font-bold rounded-full border border-blue-500/30 tracking-wide">
+                  <span className="shrink-0 px-3 py-1.5 bg-blue-500/20 text-blue-300 text-xs font-bold rounded-full border border-blue-500/30 tracking-wide whitespace-nowrap">
                     {product.status}
                   </span>
                 </div>
 
-                <h3 className="text-xl md:text-2xl font-bold text-white mb-3 tracking-tight">
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-3 tracking-tight">
                   {product.name}
                 </h3>
                 
-                <p className="text-sm text-gray-300 mb-5 leading-relaxed font-medium">
+                <p className="text-sm text-gray-300 mb-5 leading-relaxed font-medium break-words">
                   {product.description}
                 </p>
 

@@ -78,27 +78,27 @@ export default function Navbar() {
         scrolled ? 'glass shadow-lg' : 'bg-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-2 md:px-4 lg:px-6">
-        <div className="flex items-center gap-2 md:gap-3 min-w-0 h-20 md:h-24">
+      <div className="max-w-7xl mx-auto min-w-0 px-3 sm:px-4 md:px-6">
+        <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 min-w-0 h-[4.25rem] sm:h-20 md:h-24">
           {/* Logo */}
           <motion.a
             href="/"
             aria-label="Asaase Labs home"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="flex shrink-0 items-center gap-2 md:gap-3 min-w-0 -ml-2 md:-ml-3"
+            className="flex min-w-0 shrink items-center gap-1.5 sm:gap-2 md:gap-3 -ml-0.5 sm:-ml-2 md:-ml-3"
           >
             <Image
               src="/asaase5.png"
               alt=""
               width={320}
               height={320}
-              className="h-[4.5rem] w-auto md:h-[5.5rem] object-contain object-left shrink-0"
+              className="h-10 w-auto sm:h-[4.5rem] md:h-[5.5rem] object-contain object-left shrink-0"
               priority
             />
             <span
-              className={`font-bold tracking-tight whitespace-nowrap ${
-                isAuthenticated ? 'text-xl md:text-2xl' : 'text-2xl md:text-3xl'
+              className={`min-w-0 font-bold tracking-tight truncate sm:whitespace-nowrap ${
+                isAuthenticated ? 'text-base sm:text-xl md:text-2xl' : 'text-lg sm:text-2xl md:text-3xl'
               }`}
             >
               <span className="text-white">Asaase</span>
@@ -292,25 +292,25 @@ export default function Navbar() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
-              className="md:hidden overflow-hidden border-t border-gray-800"
+              className="md:hidden overflow-hidden border-t border-gray-700/70 bg-dark/95 backdrop-blur-xl rounded-b-2xl shadow-2xl"
             >
-              <div className="py-4 space-y-1">
+              <div className="py-4 px-2 space-y-2">
                 {navLinks.map((link) => (
                   <div key={link.name}>
                     <a
                       href={link.href}
-                      className="block px-4 py-3 text-sm font-medium text-gray-300 hover:text-white hover:bg-dark-lighter rounded-lg transition-colors"
+                      className="block px-4 py-3.5 text-base font-semibold text-gray-100 hover:text-white hover:bg-dark-lighter rounded-xl transition-colors border border-transparent hover:border-gray-700/70"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       {link.name}
                     </a>
                     {link.dropdown && (
-                      <div className="pl-4 space-y-1">
+                      <div className="pl-4 space-y-1.5">
                         {link.dropdown.map((item) => (
                           <a
                             key={item.name}
                             href={item.href}
-                            className="block px-4 py-2 text-xs text-gray-400 hover:text-white hover:bg-dark-lighter rounded-lg transition-colors"
+                            className="block px-4 py-2.5 text-sm font-medium text-gray-300 hover:text-white hover:bg-dark-lighter rounded-lg transition-colors"
                             onClick={() => setMobileMenuOpen(false)}
                           >
                             {item.name}
@@ -324,14 +324,14 @@ export default function Navbar() {
                   <>
                     <a
                       href="/team/inquiries"
-                      className="block px-4 py-3 text-sm font-medium text-gray-300 hover:text-white hover:bg-dark-lighter rounded-lg transition-colors"
+                      className="block px-4 py-3.5 text-base font-semibold text-gray-100 hover:text-white hover:bg-dark-lighter rounded-xl transition-colors"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       Team inquiries
                     </a>
                     <a
                       href="/team/applications"
-                      className="block px-4 py-3 text-sm font-medium text-gray-300 hover:text-white hover:bg-dark-lighter rounded-lg transition-colors"
+                      className="block px-4 py-3.5 text-base font-semibold text-gray-100 hover:text-white hover:bg-dark-lighter rounded-xl transition-colors"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       Job applications
@@ -342,7 +342,7 @@ export default function Navbar() {
                         logout()
                         setMobileMenuOpen(false)
                       }}
-                      className="block w-full px-4 py-3 text-left text-sm font-medium text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                      className="block w-full px-4 py-3.5 text-left text-base font-semibold text-red-300 hover:bg-red-500/10 rounded-xl transition-colors"
                     >
                       Sign out
                     </button>
@@ -355,7 +355,7 @@ export default function Navbar() {
                     setAuthModalOpen(true)
                     setMobileMenuOpen(false)
                   }}
-                  className="block px-4 py-3 text-sm font-medium text-gray-300 hover:text-white hover:bg-dark-lighter rounded-lg transition-colors text-left w-full"
+                  className="block px-4 py-3.5 text-base font-semibold text-gray-100 hover:text-white hover:bg-dark-lighter rounded-xl transition-colors text-left w-full"
                 >
                   Login
                 </button>
@@ -365,7 +365,7 @@ export default function Navbar() {
                     setAuthModalOpen(true)
                     setMobileMenuOpen(false)
                   }}
-                  className="block px-4 py-3 bg-primary text-white text-sm font-medium rounded-lg text-center mt-2"
+                  className="block px-4 py-3.5 bg-primary text-white text-base font-semibold rounded-xl text-center mt-2"
                 >
                   Sign Up
                 </button>
@@ -373,7 +373,7 @@ export default function Navbar() {
                 )}
                 <a
                   href="/#contact"
-                  className="block px-4 py-3 bg-primary text-white text-sm font-medium rounded-lg text-center mt-2"
+                  className="block px-4 py-3.5 bg-primary text-white text-base font-semibold rounded-xl text-center mt-2"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Contact Us

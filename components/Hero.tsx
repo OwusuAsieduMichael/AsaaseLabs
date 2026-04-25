@@ -25,7 +25,7 @@ export default function Hero() {
   }, [heroImages.length])
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[62svh] sm:min-h-[78svh] md:min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Image slideshow with swipe effect */}
@@ -33,15 +33,19 @@ export default function Hero() {
           <motion.div
             key={image}
             initial={{ x: '100%' }}
-            animate={{ 
+            animate={{
               x: currentImageIndex === index ? '0%' : currentImageIndex > index ? '-100%' : '100%',
             }}
             transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ 
-              backgroundImage: `url(${image})`,
-            }}
-          />
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <img
+              src={image}
+              alt=""
+              className="h-full w-full object-contain"
+              draggable={false}
+            />
+          </motion.div>
         ))}
         <div className="absolute inset-0 bg-dark/80"></div>
         <div className="absolute inset-0 pattern-grid opacity-10"></div>
@@ -49,7 +53,7 @@ export default function Hero() {
         {/* Navigation Arrows for Images */}
         <button
           onClick={() => setCurrentImageIndex((prev) => (prev - 1 + heroImages.length) % heroImages.length)}
-          className="absolute left-4 md:left-8 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-dark/60 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-dark/80 flex items-center justify-center transition-all group"
+          className="absolute left-2 sm:left-4 md:left-8 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-dark/60 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-dark/80 flex items-center justify-center transition-all group"
           aria-label="Previous image"
         >
           <svg className="w-6 h-6 text-gray-300 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,7 +62,7 @@ export default function Hero() {
         </button>
         <button
           onClick={() => setCurrentImageIndex((prev) => (prev + 1) % heroImages.length)}
-          className="absolute right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-dark/60 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-dark/80 flex items-center justify-center transition-all group"
+          className="absolute right-2 sm:right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-dark/60 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-dark/80 flex items-center justify-center transition-all group"
           aria-label="Next image"
         >
           <svg className="w-6 h-6 text-gray-300 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,7 +71,7 @@ export default function Hero() {
         </button>
         
         {/* Image indicators */}
-        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+        <div className="absolute bottom-16 sm:bottom-20 left-1/2 transform -translate-x-1/2 flex gap-2 z-20 px-2">
           {heroImages.map((_, index) => (
             <button
               key={index}
@@ -83,25 +87,28 @@ export default function Hero() {
         </div>
       </div>
       
-      <div className="section-container relative z-10 text-center py-32">
+      <div className="section-container relative z-10 min-w-0 text-center py-16 sm:py-24 md:py-32">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+          className="min-w-0"
         >
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="inline-flex items-center px-4 py-2 text-sm font-semibold text-primary bg-primary/10 border border-primary/20 rounded-full mb-8 backdrop-blur-sm"
+            className="inline-flex max-w-full items-center justify-center gap-2 px-3 py-2 text-xs sm:text-sm font-semibold text-primary bg-primary/10 border border-primary/20 rounded-full mb-6 sm:mb-8 backdrop-blur-sm text-center"
           >
-            <span className="w-2 h-2 bg-primary rounded-full mr-2 animate-pulse"></span>
-            Pioneering Digital Transformation in Africa
+            <span className="w-2 h-2 shrink-0 bg-primary rounded-full animate-pulse"></span>
+            <span className="text-balance leading-snug">
+              Pioneering Digital Transformation in Africa
+            </span>
           </motion.div>
 
           {/* Main heading */}
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 text-balance leading-[1.05] tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 text-balance leading-[1.08] sm:leading-[1.05] tracking-tight break-words px-0.5">
             Building Africa's Next
             <br />
             Generation of
@@ -110,7 +117,7 @@ export default function Hero() {
           </h1>
           
           {/* Subheading */}
-          <p className="text-lg md:text-xl text-gray-300 mb-12 max-w-3xl mx-auto text-balance leading-relaxed font-medium">
+          <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-10 sm:mb-12 max-w-3xl mx-auto text-balance leading-relaxed font-medium px-0.5">
             We engineer scalable, high-performance software and digital infrastructure that empowers African enterprises to compete globally.
           </p>
 
@@ -164,14 +171,16 @@ export default function Hero() {
             transition={{ delay: 0.6, duration: 0.8 }}
             className="pt-12"
           >
-            <p className="text-sm text-gray-500 mb-8 uppercase tracking-wider">Trusted by Innovative Companies</p>
-            <div className="flex items-center justify-center gap-12 opacity-40 grayscale">
-              {/* Placeholder for company logos */}
-              <div className="text-2xl font-bold text-gray-600">AWS</div>
-              <div className="text-2xl font-bold text-gray-600">Google</div>
-              <div className="text-2xl font-bold text-gray-600">Microsoft</div>
-              <div className="text-2xl font-bold text-gray-600">Stripe</div>
-              <div className="text-2xl font-bold text-gray-600">GitHub</div>
+            <p className="text-xs sm:text-sm text-gray-500 mb-6 sm:mb-8 uppercase tracking-wider px-2">
+              Trusted by Innovative Companies
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-4 sm:gap-x-10 md:gap-x-12 opacity-40 grayscale max-w-full px-1">
+              {/* Placeholder for company logos — wrap on narrow screens */}
+              <div className="text-base sm:text-xl md:text-2xl font-bold text-gray-600 whitespace-nowrap">AWS</div>
+              <div className="text-base sm:text-xl md:text-2xl font-bold text-gray-600 whitespace-nowrap">Google</div>
+              <div className="text-base sm:text-xl md:text-2xl font-bold text-gray-600 whitespace-nowrap">Microsoft</div>
+              <div className="text-base sm:text-xl md:text-2xl font-bold text-gray-600 whitespace-nowrap">Stripe</div>
+              <div className="text-base sm:text-xl md:text-2xl font-bold text-gray-600 whitespace-nowrap">GitHub</div>
             </div>
           </motion.div>
         </motion.div>

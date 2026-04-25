@@ -25,10 +25,10 @@ export default function CTA() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight leading-[1.1]">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight leading-[1.1]">
               Let's Build Something Great
             </h2>
-            <p className="text-lg md:text-xl text-gray-300 mb-12 max-w-2xl mx-auto text-balance font-medium">
+            <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-12 max-w-2xl mx-auto text-balance font-medium">
               Ready to transform your vision into reality? Partner with us to create solutions that drive real impact.
             </p>
 
@@ -56,7 +56,7 @@ export default function CTA() {
             </div>
 
             {/* Contact Info */}
-            <div className="relative z-20 grid md:grid-cols-4 gap-6">
+            <div className="relative z-20 scroll-rail md:grid md:grid-cols-4 md:gap-6 md:overflow-visible md:pb-0 md:snap-none">
               {[
                 { label: 'Email', value: EMAIL, icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', link: MAILTO },
                 { label: 'Phone', value: '+233 55 977 6547', icon: 'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z', link: 'tel:+233559776547' },
@@ -69,6 +69,7 @@ export default function CTA() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.2 + index * 0.1, duration: 0.5 }}
+                  className="scroll-rail-item"
                 >
                   <a
                     href={item.link}
@@ -80,7 +81,7 @@ export default function CTA() {
                         ? 'noopener noreferrer'
                         : undefined
                     }
-                    className="card p-6 text-center border-t-4 border-blue-500 hover:border-blue-400 bg-gradient-to-b from-blue-500/10 to-transparent hover:from-blue-500/15 transition-all block h-full cursor-pointer"
+                    className="card scroll-rail-card p-3 sm:p-4 text-center border-t-4 border-blue-500 hover:border-blue-400 bg-gradient-to-b from-blue-500/10 to-transparent hover:from-blue-500/15 transition-all block h-full cursor-pointer md:p-6"
                   >
                     <div className="flex justify-center mb-3">
                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">

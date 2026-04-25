@@ -8,6 +8,14 @@ import { INSIGHTS_BLOG_SUMMARIES } from './summaries'
 export const metadata: Metadata = {
   title: 'All Articles | AsaaseLabs Insights',
   description: 'Browse all AsaaseLabs articles on AI, cloud, and product design.',
+  alternates: {
+    canonical: '/insights/blog',
+  },
+  openGraph: {
+    title: 'All Articles | AsaaseLabs Insights',
+    description: 'Browse all AsaaseLabs articles on AI, cloud, and product design.',
+    url: 'https://www.asaaselabs.tech/insights/blog',
+  },
 }
 
 export default function InsightsBlogIndexPage() {

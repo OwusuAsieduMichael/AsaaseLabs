@@ -92,16 +92,16 @@ export default function Process() {
           <div className="inline-flex items-center mb-4 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full backdrop-blur-sm">
             <span className="text-primary text-sm font-bold tracking-wide">OUR METHODOLOGY</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight leading-[1.1]">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight leading-[1.1]">
             Our Process
           </h2>
-          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto text-balance font-medium">
+          <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto text-balance font-medium">
             A systematic approach that delivers exceptional results
           </p>
         </motion.div>
 
         {/* Process Steps */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="scroll-rail md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 md:overflow-visible md:pb-0 md:snap-none">
           {steps.map((step, index) => (
             <motion.div
               key={step.number}
@@ -109,7 +109,7 @@ export default function Process() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="card p-8 hover-lift group border-l-4 border-purple-500 hover:border-purple-400 bg-gradient-to-br from-purple-500/10 to-transparent hover:from-purple-500/15 transition-all"
+              className="card scroll-rail-item scroll-rail-card p-3 sm:p-4 hover-lift group border-l-4 border-purple-500 hover:border-purple-400 bg-gradient-to-br from-purple-500/10 to-transparent hover:from-purple-500/15 transition-all md:p-8"
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="w-12 h-12 rounded-full bg-primary/10 border-2 border-primary/30 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">

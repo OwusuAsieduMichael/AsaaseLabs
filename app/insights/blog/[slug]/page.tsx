@@ -15,9 +15,19 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: Props): Metadata {
   const post = getInsightsBlogPost(params.slug)
   if (!post) return { title: 'Article | AsaaseLabs' }
+  const articleUrl = `https://www.asaaselabs.tech/insights/blog/${post.slug}`
   return {
     title: `${post.title} | AsaaseLabs Insights`,
     description: post.excerpt,
+    alternates: {
+      canonical: `/insights/blog/${post.slug}`,
+    },
+    openGraph: {
+      title: `${post.title} | AsaaseLabs Insights`,
+      description: post.excerpt,
+      url: articleUrl,
+      type: 'article',
+    },
   }
 }
 

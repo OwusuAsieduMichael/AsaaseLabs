@@ -56,7 +56,7 @@ export default function Footer() {
       </div>
 
       <div className="section-container py-16 relative z-10">
-        <div className="grid md:grid-cols-4 gap-12 mb-12">
+        <div className="grid gap-10 mb-12">
           {/* Brand */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -81,32 +81,54 @@ export default function Footer() {
             </p>
           </motion.div>
 
-          {/* Links */}
-          {Object.entries(footerLinks).map(([category, links], index) => (
-            <motion.div
-              key={category}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <h3 className="font-semibold text-sm text-white mb-4">{category}</h3>
-              <ul className="space-y-3">
-                {links.map((link) => (
-                  <li key={link.name}>
-                    <a
-                      href={link.href}
-                      target={link.href.startsWith('http') ? '_blank' : undefined}
-                      rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                      className="text-sm text-gray-400 hover:text-white transition-colors"
-                    >
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
+          {/* Horizontal dropdown links */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="relative z-20"
+          >
+            <div className="flex items-center justify-start md:justify-center gap-3 sm:gap-4 overflow-x-auto pb-2">
+              {Object.entries(footerLinks).map(([category, links], index) => (
+                <details
+                  key={category}
+                  className="group relative min-w-[112px] sm:min-w-[126px]"
+                >
+                  <summary
+                    className="list-none cursor-pointer rounded-xl border border-gray-700 bg-dark-lighter/70 px-3 py-2 text-center text-xs sm:text-sm font-semibold text-white hover:border-primary/70 transition-colors"
+                    style={{ animationDelay: `${index * 80}ms` }}
+                  >
+                    <span className="inline-flex items-center gap-1.5">
+                      {category}
+                      <svg
+                        className="w-3.5 h-3.5 text-gray-400 transition-transform group-open:rotate-180"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </span>
+                  </summary>
+
+                  <ul className="absolute left-0 mt-2 w-52 rounded-xl border border-gray-700 bg-dark-card/95 backdrop-blur-md p-3 space-y-2 shadow-2xl hidden group-open:block">
+                    {links.map((link) => (
+                      <li key={link.name}>
+                        <a
+                          href={link.href}
+                          target={link.href.startsWith('http') ? '_blank' : undefined}
+                          rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                          className="block rounded-lg px-2.5 py-1.5 text-sm text-gray-300 hover:text-white hover:bg-dark-lighter transition-colors"
+                        >
+                          {link.name}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              ))}
+            </div>
+          </motion.div>
         </div>
 
         {/* Bottom */}

@@ -71,15 +71,15 @@ export default function WhyChooseUs() {
           <div className="inline-flex items-center mb-4 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full backdrop-blur-sm">
             <span className="text-primary text-sm font-bold tracking-wide">OUR ADVANTAGES</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight leading-[1.1]">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight leading-[1.1] text-balance px-1">
             Why Choose AsaaseLabs
           </h2>
-          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto text-balance font-medium">
+          <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto text-balance font-medium px-1">
             We combine technical excellence with a deep commitment to your success
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+        <div className="scroll-rail md:grid min-w-0 md:grid-cols-2 md:gap-8 md:overflow-visible md:pb-0 md:snap-none">
           {reasons.map((reason, index) => (
             <motion.div
               key={reason.title}
@@ -87,17 +87,17 @@ export default function WhyChooseUs() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="relative group"
+              className="relative group scroll-rail-item"
             >
               {/* Gradient glow effect */}
               <div className={`absolute inset-0 bg-gradient-to-r ${reason.gradient} opacity-0 group-hover:opacity-10 blur-xl transition-opacity duration-500 rounded-2xl`}></div>
               
-              <div className="relative card p-8 md:p-10 hover-lift border-l-4 border-blue-500 hover:border-blue-400 bg-gradient-to-br from-blue-500/10 to-transparent hover:from-blue-500/15 transition-all">
+              <div className="relative card scroll-rail-card min-w-0 p-3 sm:p-4 md:p-10 hover-lift border-l-4 border-blue-500 hover:border-blue-400 bg-gradient-to-br from-blue-500/10 to-transparent hover:from-blue-500/15 transition-all">
                 <div className={`mb-6 text-primary bg-gradient-to-r ${reason.gradient} bg-clip-text text-transparent`}>
                   {reason.icon}
                 </div>
                 <h3 className="text-xl md:text-2xl font-bold mb-3 text-white tracking-tight">{reason.title}</h3>
-                <p className="text-gray-300 leading-relaxed font-medium">{reason.description}</p>
+                <p className="text-gray-300 leading-relaxed font-medium break-words">{reason.description}</p>
               </div>
             </motion.div>
           ))}

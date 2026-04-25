@@ -70,16 +70,16 @@ export default function Services() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16 md:mb-20"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight leading-[1.1]">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight leading-[1.1] text-balance px-1">
             Core Capabilities
           </h2>
-          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto font-medium">
+          <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto font-medium text-balance px-1">
             End-to-end digital product engineering tailored for scale and performance.
           </p>
         </motion.div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-5">
+        <div className="scroll-rail md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-5 md:overflow-visible md:pb-0 md:snap-none">
           {services.map((service, index) => (
             <motion.div
               key={service.title}
@@ -87,7 +87,7 @@ export default function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="card p-6 md:p-7 group cursor-pointer border-l-4 border-blue-500 hover:border-blue-400 bg-gradient-to-br from-blue-500/10 to-transparent hover:from-blue-500/15 transition-all"
+              className="card scroll-rail-item scroll-rail-card p-3 sm:p-4 md:p-7 group cursor-pointer border-l-4 border-blue-500 hover:border-blue-400 bg-gradient-to-br from-blue-500/10 to-transparent hover:from-blue-500/15 transition-all"
             >
               <div className="text-blue-400 mb-4 group-hover:scale-110 transition-transform duration-300">
                 {service.icon}
@@ -95,7 +95,7 @@ export default function Services() {
               <h3 className="text-lg md:text-xl font-bold mb-3 text-white tracking-tight">
                 {service.title}
               </h3>
-              <p className="text-sm md:text-base text-gray-300 mb-5 leading-relaxed font-medium">
+              <p className="text-sm md:text-base text-gray-300 mb-5 leading-relaxed font-medium break-words">
                 {service.description}
               </p>
               

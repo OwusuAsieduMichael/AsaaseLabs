@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Hero from '@/components/Hero'
 import About from '@/components/About'
 import Services from '@/components/Services'
@@ -9,6 +10,21 @@ import Testimonials from '@/components/Testimonials'
 import CTA from '@/components/CTA'
 import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
+
+export const metadata: Metadata = {
+  title: 'Custom Software, Cloud & AI Solutions',
+  description:
+    'Partner with AsaaseLabs to design and build high-performance software products, scalable cloud platforms, and practical AI systems.',
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'AsaaseLabs | Custom Software, Cloud & AI Solutions',
+    description:
+      'Partner with AsaaseLabs to design and build high-performance software products, scalable cloud platforms, and practical AI systems.',
+    url: 'https://www.asaaselabs.tech',
+  },
+}
 
 export default function Home() {
   return (

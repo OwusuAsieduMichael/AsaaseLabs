@@ -100,26 +100,26 @@ export default function Testimonials() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-white">
             Client Testimonials
           </h2>
-          <p className="text-lg text-gray-300">
+          <p className="text-base sm:text-lg text-gray-300">
             Building trust through exceptional delivery and lasting partnerships
           </p>
         </motion.div>
 
         {/* Testimonials Grid */}
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div className="relative z-10 scroll-rail md:grid md:grid-cols-3 md:gap-8 mb-12 md:overflow-visible md:pb-0 md:snap-none">
           {visibleTestimonials.map((testimonial, index) => (
             <motion.div
               key={testimonial.id}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="relative group"
+              className="relative group scroll-rail-item"
             >
               {/* Card with glassmorphism effect */}
-              <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 h-full hover:bg-white/10 transition-all duration-300"
+              <div className="relative scroll-rail-card bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-3 sm:p-4 h-full hover:bg-white/10 transition-all duration-300 md:p-8"
                    style={{ boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)' }}>
                 
                 {/* Sparkle effect on hover */}
@@ -170,7 +170,7 @@ export default function Testimonials() {
         </div>
 
         {/* Navigation Dots */}
-        <div className="flex justify-center gap-3">
+        <div className="hidden md:flex justify-center gap-3">
           {[...Array(totalDots)].map((_, index) => (
             <button
               key={index}
