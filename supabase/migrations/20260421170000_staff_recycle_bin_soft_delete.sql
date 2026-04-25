@@ -11,3 +11,4 @@ create index if not exists project_inquiries_deleted_at_idx
 
 create index if not exists job_applications_deleted_at_idx
   on public.job_applications (deleted_at);
+
