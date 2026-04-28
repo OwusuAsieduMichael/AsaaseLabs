@@ -47,7 +47,7 @@ export default function Founder() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
                 transition={{ duration: 0.2 }}
-                className="relative w-full max-w-md bg-dark-card border border-gray-800 rounded-2xl shadow-2xl overflow-hidden p-8"
+            className="relative w-full max-w-md bg-dark-card border border-gray-800 rounded-2xl shadow-2xl overflow-hidden p-5 sm:p-8"
               >
                 {/* Close Button */}
                 <button
@@ -129,12 +129,12 @@ export default function Founder() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16 md:mb-20"
+            className="text-center mb-12 md:mb-20"
           >
             <div className="inline-flex items-center mb-4 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full backdrop-blur-sm">
               <span className="text-primary text-sm font-bold tracking-wide">LEADERSHIP</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight leading-[1.1]">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight leading-[1.1]">
               Meet Our Founder
             </h2>
           </motion.div>
@@ -146,7 +146,7 @@ export default function Founder() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative overflow-hidden border-l-4 border-blue-500 rounded-2xl"
-            style={{ minHeight: '600px', backgroundColor: '#4a5568' }}
+            style={{ minHeight: '540px', backgroundColor: '#4a5568' }}
           >
             {/* Background Image */}
             <div className="absolute inset-0" style={{ backgroundColor: '#4a5568' }}>
@@ -157,7 +157,7 @@ export default function Founder() {
               }}>
                 <Image
                   src="/founder.jpeg"
-                  alt="Michael Owusu Asiedu - Founder & CEO"
+                  alt="Michael Owusu Asiedu, Founder & CEO"
                   fill
                   className="object-contain object-right"
                   priority
@@ -168,45 +168,45 @@ export default function Founder() {
             </div>
 
             {/* Content Overlay */}
-            <div className="relative z-10 p-8 md:p-12 flex flex-col justify-end min-h-[600px]">
+            <div className="relative z-10 flex min-h-[540px] flex-col justify-end p-5 sm:p-8 md:min-h-[600px] md:p-12">
               <div className="max-w-3xl">
                 {/* Name & Title with glow effect */}
                 <div className="mb-6">
-                  <h3 className="text-4xl md:text-5xl font-bold text-white mb-3 tracking-tight" style={{ textShadow: '0 2px 20px rgba(0, 0, 0, 0.8), 0 0 40px rgba(59, 130, 246, 0.3)' }}>
+                  <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 tracking-tight" style={{ textShadow: '0 2px 20px rgba(0, 0, 0, 0.8), 0 0 40px rgba(59, 130, 246, 0.3)' }}>
                     Michael Owusu Asiedu
                   </h3>
-                  <p className="text-xl text-primary font-semibold" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.8)' }}>
+                  <p className="text-lg sm:text-xl text-primary font-semibold" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.8)' }}>
                     Founder & CEO
                   </p>
                 </div>
 
                 {/* Quote Icon with glow */}
                 <div className="mb-4">
-                  <svg className="w-12 h-12 text-primary/40" fill="currentColor" viewBox="0 0 24 24" style={{ filter: 'drop-shadow(0 0 10px rgba(59, 130, 246, 0.5))' }}>
+                  <svg className="w-9 h-9 sm:w-12 sm:h-12 text-primary/40" fill="currentColor" viewBox="0 0 24 24" style={{ filter: 'drop-shadow(0 0 10px rgba(59, 130, 246, 0.5))' }}>
                     <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
                   </svg>
                 </div>
 
                 {/* Statement with backdrop */}
                 <blockquote className="mb-8">
-                  <p className="text-lg md:text-xl text-white leading-relaxed font-medium mb-4" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.8)' }}>
-                    "At AsaaseLabs, we believe that Africa's digital transformation is not just about adopting technology—it's about creating solutions that are deeply rooted in our unique challenges and opportunities."
+                  <p className="text-base sm:text-lg md:text-xl text-white leading-relaxed font-medium mb-4" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.8)' }}>
+                    "At AsaaseLabs, we believe that Africa's digital transformation is not just about adopting technology, it's about creating solutions that are deeply rooted in our unique challenges and opportunities."
                   </p>
-                  <p className="text-gray-200 leading-relaxed" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.8)' }}>
+                  <p className="text-sm sm:text-base text-gray-200 leading-relaxed" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.8)' }}>
                     Our mission is to build world-class digital products that empower African businesses to compete globally while solving local problems. Every line of code we write, every system we architect, is driven by the vision of a technologically empowered Africa.
                   </p>
                 </blockquote>
 
                 {/* Social Links & Credentials */}
-                <div className="flex flex-wrap items-center gap-6">
+                <div className="flex flex-wrap items-center gap-4 sm:gap-6">
                   {/* Social Links with glow effect */}
-                  <div className="flex gap-3">
+                  <div className="flex gap-2.5 sm:gap-3">
                     <a
                       href="https://www.linkedin.com/in/michaelowusuasiedu/"
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => handleSocialClick(e, 'https://www.linkedin.com/in/michaelowusuasiedu/')}
-                      className="w-12 h-12 rounded-full bg-dark/80 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-primary/20 flex items-center justify-center transition-all group"
+                      className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-dark/80 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-primary/20 flex items-center justify-center transition-all group"
                       style={{ boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)' }}
                       aria-label="LinkedIn"
                     >
@@ -219,7 +219,7 @@ export default function Founder() {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => handleSocialClick(e, 'https://github.com/OwusuAsieduMichael')}
-                      className="w-12 h-12 rounded-full bg-dark/80 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-primary/20 flex items-center justify-center transition-all group"
+                      className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-dark/80 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-primary/20 flex items-center justify-center transition-all group"
                       style={{ boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)' }}
                       aria-label="GitHub"
                     >
@@ -230,7 +230,7 @@ export default function Founder() {
                     <a
                       href="mailto:owusuasiedumichael9@gmail.com"
                       onClick={(e) => handleSocialClick(e, 'mailto:owusuasiedumichael9@gmail.com')}
-                      className="w-12 h-12 rounded-full bg-dark/80 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-primary/20 flex items-center justify-center transition-all group"
+                      className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-dark/80 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-primary/20 flex items-center justify-center transition-all group"
                       style={{ boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)' }}
                       aria-label="Email"
                     >
@@ -243,7 +243,7 @@ export default function Founder() {
                   <div className="hidden md:block w-px h-12 bg-gray-600"></div>
 
                   {/* Quick Stats */}
-                  <div className="flex gap-6">
+                  <div className="flex w-full justify-between gap-4 sm:w-auto sm:justify-start sm:gap-6">
                     <div className="text-center">
                       <div className="text-2xl font-bold text-white mb-1" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.8)' }}>10+</div>
                       <div className="text-xs text-gray-300 font-semibold" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)' }}>Years</div>

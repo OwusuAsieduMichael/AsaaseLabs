@@ -42,7 +42,9 @@ export default function Hero() {
             <img
               src={image}
               alt=""
-              className="h-full w-full object-contain"
+              className={`h-full w-full ${
+                index === 1 ? 'object-cover object-center' : 'object-contain'
+              }`}
               draggable={false}
             />
           </motion.div>
@@ -53,7 +55,7 @@ export default function Hero() {
         {/* Navigation Arrows for Images */}
         <button
           onClick={() => setCurrentImageIndex((prev) => (prev - 1 + heroImages.length) % heroImages.length)}
-          className="absolute left-2 sm:left-4 md:left-8 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-dark/60 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-dark/80 flex items-center justify-center transition-all group"
+          className="absolute left-2 sm:left-4 md:left-8 top-1/2 transform -translate-y-1/2 z-20 hidden sm:flex w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-dark/60 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-dark/80 items-center justify-center transition-all group"
           aria-label="Previous image"
         >
           <svg className="w-6 h-6 text-gray-300 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,7 +64,7 @@ export default function Hero() {
         </button>
         <button
           onClick={() => setCurrentImageIndex((prev) => (prev + 1) % heroImages.length)}
-          className="absolute right-2 sm:right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-dark/60 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-dark/80 flex items-center justify-center transition-all group"
+          className="absolute right-2 sm:right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-20 hidden sm:flex w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-dark/60 backdrop-blur-sm border-2 border-gray-600 hover:border-primary hover:bg-dark/80 items-center justify-center transition-all group"
           aria-label="Next image"
         >
           <svg className="w-6 h-6 text-gray-300 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,7 +89,7 @@ export default function Hero() {
         </div>
       </div>
       
-      <div className="section-container relative z-10 min-w-0 text-center py-16 sm:py-24 md:py-32">
+      <div className="section-container relative z-10 min-w-0 text-center pt-24 pb-14 sm:py-24 md:py-32">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -108,7 +110,7 @@ export default function Hero() {
           </motion.div>
 
           {/* Main heading */}
-          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 text-balance leading-[1.08] sm:leading-[1.05] tracking-tight break-words px-0.5">
+          <h1 className="text-[1.85rem] sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 text-balance leading-[1.12] sm:leading-[1.05] tracking-tight break-words px-0.5">
             Building Africa's Next
             <br />
             Generation of
@@ -117,7 +119,7 @@ export default function Hero() {
           </h1>
           
           {/* Subheading */}
-          <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-10 sm:mb-12 max-w-3xl mx-auto text-balance leading-relaxed font-medium px-0.5">
+          <p className="text-[0.95rem] sm:text-lg md:text-xl text-gray-300 mb-10 sm:mb-12 max-w-3xl mx-auto text-balance leading-relaxed font-medium px-0.5">
             We engineer scalable, high-performance software and digital infrastructure that empowers African enterprises to compete globally.
           </p>
 
@@ -144,11 +146,11 @@ export default function Hero() {
             </motion.a>
           </div>
 
-          {/* Scroll Down Arrow - More Visible */}
+          {/* Scroll down arrow, more visible */}
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            className="mt-6 mb-12"
+            className="hidden sm:block mt-6 mb-12"
           >
             <a 
               href="#about" 
@@ -175,7 +177,7 @@ export default function Hero() {
               Trusted by Innovative Companies
             </p>
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-4 sm:gap-x-10 md:gap-x-12 opacity-40 grayscale max-w-full px-1">
-              {/* Placeholder for company logos — wrap on narrow screens */}
+              {/* Placeholder for company logos, wrap on narrow screens */}
               <div className="text-base sm:text-xl md:text-2xl font-bold text-gray-600 whitespace-nowrap">AWS</div>
               <div className="text-base sm:text-xl md:text-2xl font-bold text-gray-600 whitespace-nowrap">Google</div>
               <div className="text-base sm:text-xl md:text-2xl font-bold text-gray-600 whitespace-nowrap">Microsoft</div>
