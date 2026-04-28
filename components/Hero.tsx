@@ -166,25 +166,6 @@ export default function Hero() {
             </a>
           </motion.div>
 
-          {/* Trusted By */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-            className="pt-12"
-          >
-            <p className="text-xs sm:text-sm text-gray-500 mb-6 sm:mb-8 uppercase tracking-wider px-2">
-              Trusted by Innovative Companies
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-4 sm:gap-x-10 md:gap-x-12 opacity-40 grayscale max-w-full px-1">
-              {/* Placeholder for company logos, wrap on narrow screens */}
-              <div className="text-base sm:text-xl md:text-2xl font-bold text-gray-600 whitespace-nowrap">AWS</div>
-              <div className="text-base sm:text-xl md:text-2xl font-bold text-gray-600 whitespace-nowrap">Google</div>
-              <div className="text-base sm:text-xl md:text-2xl font-bold text-gray-600 whitespace-nowrap">Microsoft</div>
-              <div className="text-base sm:text-xl md:text-2xl font-bold text-gray-600 whitespace-nowrap">Stripe</div>
-              <div className="text-base sm:text-xl md:text-2xl font-bold text-gray-600 whitespace-nowrap">GitHub</div>
-            </div>
-          </motion.div>
         </motion.div>
       </div>
     </section>
