@@ -365,10 +365,10 @@ export default function GetStarted() {
                             className="w-full px-4 py-3 bg-dark-lighter border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                           >
                             <option value="">Select budget range</option>
-                            <option value="350-500">$350 – $500</option>
-                            <option value="550-1000">$550 – $1,000</option>
+                            <option value="350-500">$350 to $500</option>
+                            <option value="550-1000">$550 to $1,000</option>
                             <option value="2000-plus">$2,000+</option>
-                            <option value="negotiations">Negotiations — call us to discuss</option>
+                            <option value="negotiations">Negotiations, call us to discuss</option>
                           </select>
                         </div>
 

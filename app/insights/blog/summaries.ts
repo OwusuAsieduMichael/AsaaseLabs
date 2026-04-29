@@ -1,4 +1,4 @@
-/** Card-only fields — safe to import from client components (no full article body). */
+/** Card-only fields, safe to import from client components (no full article body). */
 export type InsightsBlogSummary = {
   id: number
   slug: string

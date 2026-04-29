@@ -1,5 +1,5 @@
 /**
- * Staff allowlist (server-only). Set `STAFF_EMAILS` in env — comma-separated, case-insensitive.
+ * Staff allowlist (server-only). Set `STAFF_EMAILS` in env, comma-separated and case-insensitive.
  */
 export function getStaffEmails(): string[] {
   return (process.env.STAFF_EMAILS ?? '')

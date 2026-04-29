@@ -268,7 +268,7 @@ export default function TeamApplicationsPage() {
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">
-              {showDeleted ? 'Job applications — Recycle Bin' : 'Job applications'}
+              {showDeleted ? 'Job applications: Recycle Bin' : 'Job applications'}
             </h1>
             <p className="text-gray-400 text-sm">
               {showDeleted
@@ -339,8 +339,8 @@ export default function TeamApplicationsPage() {
                     </a>
                     {row.phone && <p className="text-xs text-gray-500 mt-1">{row.phone}</p>}
                   </td>
-                  <td className="px-4 py-3 max-w-[180px] truncate">{row.position ?? '—'}</td>
-                  <td className="px-4 py-3 max-w-[120px] truncate">{row.experience ?? '—'}</td>
+                  <td className="px-4 py-3 max-w-[180px] truncate">{row.position ?? 'N/A'}</td>
+                  <td className="px-4 py-3 max-w-[120px] truncate">{row.experience ?? 'N/A'}</td>
                   <td className="px-4 py-3 max-w-[220px] text-xs">
                     {row.resume_file_name ? (
                       <div className="space-y-1">
@@ -382,13 +382,13 @@ export default function TeamApplicationsPage() {
                         )}
                       </div>
                     ) : (
-                      '—'
+                      'N/A'
                     )}
                   </td>
                   <td className="px-4 py-3 max-w-[260px] text-xs">
                     <div className="space-y-1">
                       <p className="truncate" title={row.cover_letter ?? ''}>
-                        {row.cover_letter || '—'}
+                        {row.cover_letter || 'N/A'}
                       </p>
                       {row.cover_letter_file_name && row.cover_letter_storage_path && (
                         <>

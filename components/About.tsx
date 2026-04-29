@@ -66,7 +66,7 @@ export default function About() {
             </div>
           </motion.div>
 
-          {/* Right Content - Mission & Vision */}
+          {/* Right content, mission and vision */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}

@@ -2,7 +2,7 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
 /**
- * Supabase client bound to the caller's cookies — use in Route Handlers to read `auth.getUser()`.
+ * Supabase client bound to the caller's cookies, use in Route Handlers to read `auth.getUser()`.
  */
 export function createSupabaseRouteHandlerClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL

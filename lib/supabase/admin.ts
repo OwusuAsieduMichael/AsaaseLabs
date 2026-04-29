@@ -3,7 +3,7 @@ import { trimEnvValue } from '@/lib/supabase/env-server'
 
 /**
  * Server-only Supabase client (service role). Bypasses RLS.
- * Use only in Route Handlers / Server Actions — never import from client components.
+ * Use only in Route Handlers / Server Actions, never import from client components.
  */
 export function createSupabaseAdmin() {
   const url = trimEnvValue(process.env.NEXT_PUBLIC_SUPABASE_URL)

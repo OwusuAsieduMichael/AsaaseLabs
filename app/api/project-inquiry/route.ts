@@ -149,7 +149,7 @@ export async function POST(request: Request) {
       const specific = userFacingMessageForSupabaseError(error)
       const dev =
         process.env.NODE_ENV === 'development'
-          ? [error.message, error.code, error.details].filter(Boolean).join(' — ')
+          ? [error.message, error.code, error.details].filter(Boolean).join(', ')
           : ''
       return NextResponse.json(
         {

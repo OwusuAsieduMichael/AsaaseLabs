@@ -135,7 +135,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                   {mode === 'login' ? 'Sign in' : 'Create an account'}
                 </h2>
                 <p className="text-xs text-gray-500 mt-1">
-                  {mode === 'login' ? 'Use the email and password for your account.' : 'Quick setup — name, email, and password.'}
+                  {mode === 'login' ? 'Use the email and password for your account.' : 'Quick setup: name, email, and password.'}
                 </p>
               </div>
 

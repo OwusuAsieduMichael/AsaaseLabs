@@ -14,7 +14,7 @@ const testimonials = [
   {
     id: 2,
     name: 'Mensah Isaac Nana Sam',
-    role: 'CEO/Founder - SmartHive Labs',
+    role: 'CEO/Founder, SmartHive Labs',
     image: '/dhope.jpg',
     text: 'Asaase Labs is one of the rare tech partners you can truly trust to handle everything from design workflows to full-scale development and seamless collaboration.'
   },

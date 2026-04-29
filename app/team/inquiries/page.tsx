@@ -256,7 +256,7 @@ export default function TeamInquiriesPage() {
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">
-              {showDeleted ? 'Project inquiries — Recycle Bin' : 'Project inquiries'}
+              {showDeleted ? 'Project inquiries: Recycle Bin' : 'Project inquiries'}
             </h1>
             <p className="text-gray-400 text-sm">
               {showDeleted
@@ -326,8 +326,8 @@ export default function TeamInquiriesPage() {
                       {row.email}
                     </a>
                   </td>
-                  <td className="px-4 py-3 max-w-[140px] truncate">{row.project_type ?? '—'}</td>
-                  <td className="px-4 py-3 max-w-[120px] truncate">{row.budget ?? '—'}</td>
+                  <td className="px-4 py-3 max-w-[140px] truncate">{row.project_type ?? 'N/A'}</td>
+                  <td className="px-4 py-3 max-w-[120px] truncate">{row.budget ?? 'N/A'}</td>
                   <td className="px-4 py-3">
                     {showDeleted ? (
                       <span className="text-xs text-gray-400">{row.status}</span>
@@ -346,7 +346,7 @@ export default function TeamInquiriesPage() {
                     )}
                   </td>
                   <td className="px-4 py-3 max-w-xs truncate text-xs" title={row.description ?? ''}>
-                    {row.description ?? '—'}
+                    {row.description ?? 'N/A'}
                   </td>
                   <td className="px-4 py-3 max-w-[220px] text-xs">
                     {row.description_file_name && row.description_file_path ? (
@@ -377,7 +377,7 @@ export default function TeamInquiriesPage() {
                         </button>
                       </div>
                     ) : (
-                      '—'
+                      'N/A'
                     )}
                   </td>
                   <td className="px-4 py-3">

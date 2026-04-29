@@ -1,6 +1,6 @@
 # Asaase Labs Website
 
-A world-class, highly interactive website for Asaase Labs - an African-based technology innovation lab. Built with industry-leading design standards comparable to Apple, Google, and Amazon.
+A world-class, highly interactive website for Asaase Labs, an African-based technology innovation lab. Built with industry-leading design standards comparable to Apple, Google, and Amazon.
 
 ## Design Philosophy
 
@@ -67,9 +67,9 @@ npm run dev
 ## Design System
 
 ### Colors
-- **Primary**: Blue (#0EA5E9) - Actions and links
-- **Accent**: Purple (#A855F7) - Highlights
-- **Neutral**: Gray scale - Base colors
+- **Primary**: Blue (#0EA5E9), actions and links
+- **Accent**: Purple (#A855F7), highlights
+- **Neutral**: Gray scale, base colors
 - **Background**: White with subtle patterns
 
 ### Typography

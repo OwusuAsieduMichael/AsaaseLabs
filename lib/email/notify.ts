@@ -12,13 +12,13 @@ function escapeHtml(text: string) {
 function displayBudgetRange(code: string) {
   switch (code.trim()) {
     case '350-500':
-      return '$350 – $500'
+      return '$350 to $500'
     case '550-1000':
-      return '$550 – $1,000'
+      return '$550 to $1,000'
     case '2000-plus':
       return '$2,000+'
     case 'negotiations':
-      return 'Negotiations — client prefers to discuss budget / call'
+      return 'Negotiations, client prefers to discuss budget / call'
     default:
       return code
   }
@@ -26,8 +26,8 @@ function displayBudgetRange(code: string) {
 
 function displayTimeline(code: string) {
   const labels: Record<string, string> = {
-    urgent: 'Urgent (1–2 months)',
-    standard: 'Standard (3–4 months)',
+    urgent: 'Urgent (1 to 2 months)',
+    standard: 'Standard (3 to 4 months)',
     flexible: 'Flexible (5+ months)',
   }
   return labels[code.trim()] || code
@@ -175,7 +175,7 @@ export function buildProjectInquiryEmail(payload: {
   <p style="margin-top:20px;font-size:13px;color:#6b7280;">Reply directly to this thread using the applicant’s email: <a href="mailto:${e(payload.email)}">${e(payload.email)}</a></p>
 </body></html>`
 
-  return { subject: `[AsaaseLabs] Project inquiry — ${payload.fullName}`, html }
+  return { subject: `[AsaaseLabs] Project inquiry: ${payload.fullName}`, html }
 }
 
 export function buildJobApplicationEmail(payload: {
@@ -227,7 +227,7 @@ export function buildJobApplicationEmail(payload: {
 </body></html>`
 
   return {
-    subject: `[AsaaseLabs] Job application — ${payload.position} (${payload.firstName} ${payload.lastName})`,
+    subject: `[AsaaseLabs] Job application: ${payload.position} (${payload.firstName} ${payload.lastName})`,
     html,
   }
 }
@@ -297,7 +297,7 @@ export function buildApplicationStatusEmail(payload: {
   <p style="margin:0;">Regards,<br/>AsaaseLabs Recruitment Team</p>
 </body></html>`
   return {
-    subject: `[AsaaseLabs] Application update${positionText ? ` — ${positionText}` : ''}`,
+    subject: `[AsaaseLabs] Application update${positionText ? `: ${positionText}` : ''}`,
     html,
   }
 }

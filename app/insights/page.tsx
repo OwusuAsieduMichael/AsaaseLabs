@@ -65,7 +65,7 @@ export default function InsightsPage() {
         setNewsletterFeedback({ ok: false, text: data.message || 'Could not subscribe.' })
         return
       }
-      setNewsletterFeedback({ ok: true, text: "Thanks — you're on the list." })
+      setNewsletterFeedback({ ok: true, text: "Thanks, you're on the list." })
       setNewsletterEmail('')
     } catch {
       setNewsletterFeedback({ ok: false, text: 'Network error. Try again in a moment.' })

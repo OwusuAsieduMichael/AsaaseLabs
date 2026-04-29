@@ -14,7 +14,7 @@ const SECTIONS_BY_SLUG: Record<string, BlogSection[]> = {
     {
       heading: 'Why Africa is a defining frontier for AI',
       paragraphs: [
-        'Across the continent, founders, researchers, and policymakers are asking the same question: how can artificial intelligence solve real problems at scale—finance, agriculture, health, education, and logistics—without copying models that were built for entirely different markets?',
+        'Across the continent, founders, researchers, and policymakers are asking the same question: how can artificial intelligence solve real problems at scale in finance, agriculture, health, education, and logistics, without copying models that were built for entirely different markets?',
         'The answer is not to import a playbook wholesale. It is to combine world-class engineering with local context: languages, infrastructure constraints, regulatory realities, and the speed at which mobile-first users adopt new tools.',
       ],
     },
@@ -22,7 +22,7 @@ const SECTIONS_BY_SLUG: Record<string, BlogSection[]> = {
       heading: 'Where adoption is accelerating today',
       paragraphs: [
         'Credit scoring and fraud detection are helping responsible lenders reach underbanked customers. Agritech platforms use satellite and sensor data to guide smallholders on irrigation and inputs. Contact centres augment agents with speech and text models tuned for regional accents and code-switching.',
-        'In each case, the winning teams invest in data quality, evaluation, and human oversight—not just model size. They ship smaller, reliable systems that improve month over month.',
+        'In each case, the winning teams invest in data quality, evaluation, and human oversight, not just model size. They ship smaller, reliable systems that improve month over month.',
       ],
     },
     {
@@ -60,7 +60,7 @@ const SECTIONS_BY_SLUG: Record<string, BlogSection[]> = {
     {
       heading: 'Clarity beats cleverness',
       paragraphs: [
-        'Users rarely admire your interface—they complete a task and move on. Strong typography, predictable navigation, and consistent spacing reduce cognitive load more than decorative motion ever will.',
+        'Users rarely admire your interface, they complete a task and move on. Strong typography, predictable navigation, and consistent spacing reduce cognitive load more than decorative motion ever will.',
         'Start from jobs-to-be-done: what is the user trying to finish in under two minutes on a patchy connection?',
       ],
     },
