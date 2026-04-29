@@ -46,7 +46,7 @@ export default function CTA() {
                 </svg>
               </motion.a>
               <motion.a
-                href="#services"
+                href="/#services"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="btn-secondary inline-flex w-[min(80vw,18rem)] items-center justify-center sm:w-auto"
