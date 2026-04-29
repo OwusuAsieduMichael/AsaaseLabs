@@ -12,6 +12,8 @@ import {
   sendTeamEmail,
 } from '@/lib/email/notify'
 
+export const dynamic = 'force-dynamic'
+
 const MAX_RESUME_BYTES = 10 * 1024 * 1024
 const MAX_COVER_LETTER_FILE_BYTES = 10 * 1024 * 1024
 

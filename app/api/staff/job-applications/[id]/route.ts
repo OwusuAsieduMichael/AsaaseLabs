@@ -9,6 +9,7 @@ import { isStaffEmail } from '@/lib/staff'
 import { buildApplicationStatusEmail, sendApplicantEmail } from '@/lib/email/notify'
 
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 const ALLOWED_STATUS = new Set(['new', 'shortlisted', 'interview', 'hired', 'rejected', 'reviewing'])
 

@@ -4,6 +4,8 @@ import { createSupabaseAdmin, getProjectInquiryBucket } from '@/lib/supabase/adm
 import { userFacingMessageForSupabaseError } from '@/lib/supabase/errors'
 import { buildProjectInquiryEmail, sendTeamEmail } from '@/lib/email/notify'
 
+export const dynamic = 'force-dynamic'
+
 const MAX_DESCRIPTION_FILE_BYTES = 10 * 1024 * 1024
 
 function str(fd: FormData, key: string, max: number) {

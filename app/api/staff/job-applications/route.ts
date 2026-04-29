@@ -8,6 +8,7 @@ import { createSupabaseRouteHandlerClient } from '@/lib/supabase/route-handler'
 import { isStaffEmail } from '@/lib/staff'
 
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 const MAX_LIMIT = 100
 

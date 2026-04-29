@@ -4,6 +4,7 @@ import { createSupabaseRouteHandlerClient } from '@/lib/supabase/route-handler'
 import { isStaffEmail } from '@/lib/staff'
 
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 async function requireStaff() {
   const supabase = createSupabaseRouteHandlerClient()
