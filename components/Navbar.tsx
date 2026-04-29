@@ -1,26 +1,118 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
+import { usePathname } from 'next/navigation'
 import AuthModal from './AuthModal'
 import StaffInboxBell from './StaffInboxBell'
 import { useAuth } from '@/app/context/AuthContext'
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth()
+  const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [mobileExpandedSection, setMobileExpandedSection] = useState<string | null>(null)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login')
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const mobileMenuButtonRef = useRef<HTMLButtonElement | null>(null)
+  const mobileDrawerRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+
+    // Lock background page scroll while mobile drawer is open.
+    const originalOverflow = document.body.style.overflow
+    const originalPaddingRight = document.body.style.paddingRight
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+
+    document.body.style.overflow = 'hidden'
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`
+    }
+
+    return () => {
+      document.body.style.overflow = originalOverflow
+      document.body.style.paddingRight = originalPaddingRight
+    }
+  }, [mobileMenuOpen])
+
+  useEffect(() => {
+    if (!mobileMenuOpen) {
+      setMobileExpandedSection(null)
+    }
+  }, [mobileMenuOpen])
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+
+    const drawer = mobileDrawerRef.current
+    if (!drawer) return
+
+    const getFocusableElements = () =>
+      Array.from(
+        drawer.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => !el.hasAttribute('disabled') && el.getAttribute('aria-hidden') !== 'true')
+
+    const focusable = getFocusableElements()
+    focusable[0]?.focus()
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        setMobileMenuOpen(false)
+        return
+      }
+
+      if (event.key !== 'Tab') return
+
+      const updatedFocusable = getFocusableElements()
+      if (updatedFocusable.length === 0) {
+        event.preventDefault()
+        return
+      }
+
+      const first = updatedFocusable[0]
+      const last = updatedFocusable[updatedFocusable.length - 1]
+      const active = document.activeElement as HTMLElement | null
+
+      if (event.shiftKey) {
+        if (active === first || !drawer.contains(active)) {
+          event.preventDefault()
+          last.focus()
+        }
+      } else if (active === last || !drawer.contains(active)) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      mobileMenuButtonRef.current?.focus()
+    }
+  }, [mobileMenuOpen])
+
+  const stripHash = (href: string) => href.split('#')[0] || '/'
+  const isMainLinkActive = (href: string) => {
+    const base = stripHash(href)
+    if (base === '/') return pathname === '/'
+    return pathname === base || pathname.startsWith(`${base}/`)
+  }
+
+  const closeMobileMenu = () => setMobileMenuOpen(false)
 
   const navLinks = [
     { 
@@ -106,7 +198,7 @@ export default function Navbar() {
             </span>
           </motion.a>
           
-          {/* Desktop Navigation — centered flex band so tabs do not wrap */}
+          {/* Desktop navigation, centered flex band so tabs do not wrap */}
           <div className="hidden md:flex flex-1 min-w-0 justify-center items-center gap-0 px-1 lg:px-2">
             {navLinks.map((link) => (
               <div
@@ -164,7 +256,7 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* CTA Buttons — compact + inset from center so nav keeps space */}
+          {/* CTA buttons, compact and inset from center so nav keeps space */}
           <div className="hidden md:flex shrink-0 items-center gap-1.5 lg:gap-2 pl-2 lg:pl-5 ml-auto">
             {isAuthenticated ? (
               <>
@@ -269,120 +361,222 @@ export default function Navbar() {
           <div className="flex items-center gap-1 md:hidden">
             {isAuthenticated && <StaffInboxBell />}
             <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-gray-300 hover:text-white transition-colors"
-            aria-label="Toggle menu"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {mobileMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
+              ref={mobileMenuButtonRef}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 text-gray-300 hover:text-white transition-colors"
+              aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation-drawer"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {mobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
           </div>
         </div>
-
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="md:hidden overflow-hidden border-t border-gray-700/70 bg-dark/95 backdrop-blur-xl rounded-b-2xl shadow-2xl"
-            >
-              <div className="py-4 px-2 space-y-2">
-                {navLinks.map((link) => (
-                  <div key={link.name}>
-                    <a
-                      href={link.href}
-                      className="block px-4 py-3.5 text-base font-semibold text-gray-100 hover:text-white hover:bg-dark-lighter rounded-xl transition-colors border border-transparent hover:border-gray-700/70"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      {link.name}
-                    </a>
-                    {link.dropdown && (
-                      <div className="pl-4 space-y-1.5">
-                        {link.dropdown.map((item) => (
-                          <a
-                            key={item.name}
-                            href={item.href}
-                            className="block px-4 py-2.5 text-sm font-medium text-gray-300 hover:text-white hover:bg-dark-lighter rounded-lg transition-colors"
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            {item.name}
-                          </a>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-                {isAuthenticated ? (
-                  <>
-                    <a
-                      href="/team/inquiries"
-                      className="block px-4 py-3.5 text-base font-semibold text-gray-100 hover:text-white hover:bg-dark-lighter rounded-xl transition-colors"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Team inquiries
-                    </a>
-                    <a
-                      href="/team/applications"
-                      className="block px-4 py-3.5 text-base font-semibold text-gray-100 hover:text-white hover:bg-dark-lighter rounded-xl transition-colors"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Job applications
-                    </a>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        logout()
-                        setMobileMenuOpen(false)
-                      }}
-                      className="block w-full px-4 py-3.5 text-left text-base font-semibold text-red-300 hover:bg-red-500/10 rounded-xl transition-colors"
-                    >
-                      Sign out
-                    </button>
-                  </>
-                ) : (
-                  <>
-                <button
-                  onClick={() => {
-                    setAuthMode('login')
-                    setAuthModalOpen(true)
-                    setMobileMenuOpen(false)
-                  }}
-                  className="block px-4 py-3.5 text-base font-semibold text-gray-100 hover:text-white hover:bg-dark-lighter rounded-xl transition-colors text-left w-full"
-                >
-                  Login
-                </button>
-                <button
-                  onClick={() => {
-                    setAuthMode('signup')
-                    setAuthModalOpen(true)
-                    setMobileMenuOpen(false)
-                  }}
-                  className="block px-4 py-3.5 bg-primary text-white text-base font-semibold rounded-xl text-center mt-2"
-                >
-                  Sign Up
-                </button>
-                  </>
-                )}
-                <a
-                  href="/#contact"
-                  className="block px-4 py-3.5 bg-primary text-white text-base font-semibold rounded-xl text-center mt-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Contact Us
-                </a>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
+
+      {/* Mobile Drawer + Backdrop */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            <motion.button
+              type="button"
+              aria-label="Close mobile navigation overlay"
+              onClick={closeMobileMenu}
+              className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-[4px] md:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
+            />
+            <motion.aside
+              id="mobile-navigation-drawer"
+              ref={mobileDrawerRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Mobile navigation menu"
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
+              className="fixed inset-y-0 left-0 z-[70] flex w-[85vw] max-w-sm flex-col overflow-hidden border-r border-gray-700/70 bg-dark/95 shadow-[0_14px_45px_rgba(2,6,23,0.72)] backdrop-blur-xl md:hidden"
+            >
+              <div className="flex items-center justify-between border-b border-gray-700/70 px-4 py-4">
+                <p className="text-base font-semibold text-white">Menu</p>
+                <button
+                  type="button"
+                  onClick={closeMobileMenu}
+                  className="rounded-lg p-2 text-gray-300 transition-colors hover:bg-dark-lighter hover:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                  aria-label="Close navigation menu"
+                >
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto overscroll-contain px-2 py-3">
+                <div className="space-y-1">
+                  {navLinks.map((link) => {
+                    const hasDropdown = Boolean(link.dropdown?.length)
+                    const submenuId = `mobile-submenu-${link.name.replace(/\s+/g, '-').toLowerCase()}`
+                    const mainLinkActive = isMainLinkActive(link.href)
+
+                    return (
+                      <div key={link.name}>
+                        {hasDropdown ? (
+                          <>
+                            <button
+                              type="button"
+                              className={`flex w-full items-center justify-between rounded-xl border-l-2 px-4 py-3 text-left text-[1.04rem] font-semibold transition-colors ${
+                                mainLinkActive
+                                  ? 'border-primary bg-primary/15 text-white'
+                                  : 'border-transparent text-gray-100 hover:bg-dark-lighter hover:text-white'
+                              }`}
+                              onClick={() =>
+                                setMobileExpandedSection((prev) => (prev === link.name ? null : link.name))
+                              }
+                              aria-expanded={mobileExpandedSection === link.name}
+                              aria-controls={submenuId}
+                            >
+                              <span>{link.name}</span>
+                              <svg
+                                className={`h-5 w-5 text-gray-300 transition-transform duration-300 ${
+                                  mobileExpandedSection === link.name ? 'rotate-180' : ''
+                                }`}
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                              </svg>
+                            </button>
+                            <AnimatePresence initial={false}>
+                              {mobileExpandedSection === link.name && (
+                                <motion.div
+                                  id={submenuId}
+                                  initial={{ height: 0, opacity: 0 }}
+                                  animate={{ height: 'auto', opacity: 1 }}
+                                  exit={{ height: 0, opacity: 0 }}
+                                  transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
+                                  className="overflow-hidden"
+                                >
+                                  <div className="space-y-1 pb-2 pt-1 pl-4">
+                                    {link.dropdown?.map((item) => (
+                                      <a
+                                        key={item.name}
+                                        href={item.href}
+                                        className={`block rounded-lg border-l-2 px-4 py-2.5 text-sm font-medium transition-colors ${
+                                          isMainLinkActive(item.href)
+                                            ? 'border-primary bg-primary/10 text-gray-100'
+                                            : 'border-transparent text-gray-400 hover:bg-dark-lighter hover:text-gray-200'
+                                        }`}
+                                        onClick={closeMobileMenu}
+                                      >
+                                        {item.name}
+                                      </a>
+                                    ))}
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </>
+                        ) : (
+                          <a
+                            href={link.href}
+                            className={`block rounded-xl border-l-2 px-4 py-3 text-[1.04rem] font-semibold transition-colors ${
+                              mainLinkActive
+                                ? 'border-primary bg-primary/15 text-white'
+                                : 'border-transparent text-gray-100 hover:bg-dark-lighter hover:text-white'
+                            }`}
+                            onClick={closeMobileMenu}
+                          >
+                            {link.name}
+                          </a>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+
+                <div className="mt-4 border-t border-gray-700/70 pt-4">
+                  {isAuthenticated ? (
+                    <div className="space-y-1">
+                      <a
+                        href="/team/inquiries"
+                        className={`block rounded-xl border-l-2 px-4 py-3 text-[1.04rem] font-semibold transition-colors ${
+                          isMainLinkActive('/team/inquiries')
+                            ? 'border-primary bg-primary/15 text-white'
+                            : 'border-transparent text-gray-100 hover:bg-dark-lighter hover:text-white'
+                        }`}
+                        onClick={closeMobileMenu}
+                      >
+                        Team inquiries
+                      </a>
+                      <a
+                        href="/team/applications"
+                        className={`block rounded-xl border-l-2 px-4 py-3 text-[1.04rem] font-semibold transition-colors ${
+                          isMainLinkActive('/team/applications')
+                            ? 'border-primary bg-primary/15 text-white'
+                            : 'border-transparent text-gray-100 hover:bg-dark-lighter hover:text-white'
+                        }`}
+                        onClick={closeMobileMenu}
+                      >
+                        Job applications
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          logout()
+                          closeMobileMenu()
+                        }}
+                        className="block w-full rounded-xl px-4 py-3 text-left text-base font-semibold text-red-300 transition-colors hover:bg-red-500/10"
+                      >
+                        Sign out
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <button
+                        onClick={() => {
+                          setAuthMode('login')
+                          setAuthModalOpen(true)
+                          closeMobileMenu()
+                        }}
+                        className="block w-full rounded-xl px-4 py-3 text-left text-base font-semibold text-gray-100 transition-colors hover:bg-dark-lighter hover:text-white"
+                      >
+                        Login
+                      </button>
+                      <button
+                        onClick={() => {
+                          setAuthMode('signup')
+                          setAuthModalOpen(true)
+                          closeMobileMenu()
+                        }}
+                        className="block w-full rounded-xl bg-primary px-4 py-3 text-center text-base font-semibold text-white"
+                      >
+                        Sign Up
+                      </button>
+                    </div>
+                  )}
+                  <a
+                    href="/#contact"
+                    className="mt-2 block rounded-xl bg-primary px-4 py-3 text-center text-base font-semibold text-white"
+                    onClick={closeMobileMenu}
+                  >
+                    Contact Us
+                  </a>
+                </div>
+              </div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
     </motion.nav>
   )
 }

@@ -124,15 +124,15 @@ export default function Hero() {
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-8">
             <motion.a
               href="/get-started"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="btn-primary inline-flex items-center justify-center gap-2"
+              className="btn-primary inline-flex items-center justify-center gap-1.5 px-5 py-2.5 text-[0.92rem] sm:px-5 sm:py-2.5 sm:text-[0.95rem] md:px-6 md:py-2.5 md:text-sm"
             >
               Start a Project
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-[0.95rem] w-[0.95rem]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </motion.a>
@@ -140,7 +140,7 @@ export default function Hero() {
               href="#products"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="btn-secondary"
+              className="btn-secondary px-5 py-2.5 text-[0.92rem] sm:px-5 sm:py-2.5 sm:text-[0.95rem] md:px-6 md:py-2.5 md:text-sm"
             >
               View Our Work
             </motion.a>
