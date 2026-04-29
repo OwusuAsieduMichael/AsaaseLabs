@@ -33,12 +33,12 @@ export default function CTA() {
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+            <div className="flex flex-col items-center sm:flex-row sm:items-stretch gap-3 justify-center mb-16">
               <motion.a
                 href="/get-started"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="btn-primary inline-flex items-center justify-center gap-2"
+                className="btn-primary inline-flex w-[min(80vw,18rem)] items-center justify-center gap-2 sm:w-auto"
               >
                 Start Your Project
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -49,7 +49,7 @@ export default function CTA() {
                 href="#services"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="btn-secondary"
+                className="btn-secondary inline-flex w-[min(80vw,18rem)] items-center justify-center sm:w-auto"
               >
                 Explore Services
               </motion.a>
