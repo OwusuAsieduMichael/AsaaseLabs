@@ -7,7 +7,12 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 async function requireStaff() {
-  const supabase = createSupabaseRouteHandlerClient()
+  let supabase
+  try {
+    supabase = createSupabaseRouteHandlerClient()
+  } catch {
+    return null
+  }
   const {
     data: { user },
   } = await supabase.auth.getUser()
