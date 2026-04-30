@@ -189,8 +189,8 @@ export default function Navbar() {
               priority
             />
             <span
-              className={`min-w-0 font-bold tracking-tight truncate sm:whitespace-nowrap ${
-                isAuthenticated ? 'text-base sm:text-xl md:text-2xl' : 'text-lg sm:text-2xl md:text-3xl'
+              className={`font-bold tracking-tight whitespace-nowrap ${
+                isAuthenticated ? 'text-[0.95rem] sm:text-xl md:text-2xl' : 'text-[1.05rem] sm:text-2xl md:text-3xl'
               }`}
             >
               <span className="text-white">Asaase</span>
