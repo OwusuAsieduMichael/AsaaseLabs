@@ -11,6 +11,7 @@ import {
 } from 'react'
 import type { User as SupabaseUser } from '@supabase/supabase-js'
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser'
+import { getAuthCallbackUrl } from '@/lib/site-url'
 
 export const AUTH_VERIFY_EMAIL = 'VERIFY_EMAIL'
 
@@ -105,10 +106,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signup = useCallback(
     async (name: string, email: string, password: string, company?: string) => {
       if (!supabase) return 'Sign-up is not configured yet.'
+      const emailRedirectTo = getAuthCallbackUrl()
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
         options: {
+          emailRedirectTo: emailRedirectTo || undefined,
           data: {
             full_name: name.trim(),
             company: (company || '').trim(),
